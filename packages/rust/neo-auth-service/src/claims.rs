@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// The payload of a JSON Web Token (JWT)
 #[derive(Debug, Serialize, Deserialize)]
@@ -14,7 +14,7 @@ pub struct Claims {
     /// User name, the name of the user
     pub username: String,
     /// Roles, the roles assigned to the subject
-    pub roles: Vec<String>
+    pub roles: Vec<String>,
 }
 
 impl Claims {
