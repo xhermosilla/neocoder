@@ -1,10 +1,9 @@
-package org.example;
+package org.neocoder;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 
-import com.auth0.jwt.interfaces.Claim;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

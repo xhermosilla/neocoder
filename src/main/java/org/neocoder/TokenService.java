@@ -1,4 +1,4 @@
-package org.example;
+package org.neocoder;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

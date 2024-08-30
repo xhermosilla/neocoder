@@ -1,4 +1,4 @@
-package org.example;
+package org.neocoder;
 
 import org.mindrot.jbcrypt.BCrypt;
 
