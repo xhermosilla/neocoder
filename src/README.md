@@ -26,7 +26,7 @@ The `TokenService` class provides methods for generating and verifying JWTs. To 
 
 ## Running Tests
 
-To ensure everything is working correctly, you can run the tests located on "test"
+Actually, we don't have any test.
 
 ## Running coverage
 
