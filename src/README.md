@@ -12,7 +12,7 @@ dependencies {
 }
 ```
 
-## How to use
+## How to use
 
 For detailed usage instructions and API documentation, please refer to the Java Docs.
 
@@ -22,7 +22,6 @@ The `TokenService` class provides methods for generating and verifying JWTs. To 
 
 ```java
     TokenService tkn = new TokenService("secretpass123", "myApplication", 3600);
-    String token = tkn.generate("exampleUser", Arrays.asList("admin", "user"));
 ```
 
 ## Running Tests
