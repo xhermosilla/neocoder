@@ -6,7 +6,7 @@
 
 To use `neo-auth-service` in your project, add the following dependencies to your `build.gradle` file:
 
-```toml
+```gradle
 dependencies {
     implementation 'org.neocoder:1.0'
 }
