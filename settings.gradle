@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 rootProject.name = 'AuthService'
+=======
+rootProject.name = 'neo-auth-service'
+>>>>>>> a18b169 (task(java) auth service scaffold #10)
 
