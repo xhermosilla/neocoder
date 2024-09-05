@@ -8,20 +8,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Claims {
+
+    /**
+     * Expiration time of the token (in epoch seconds).
+     */
     @JsonProperty("exp")
-    public long exp; // Expiration time
+    public long exp;
 
+    /**
+     * The time at which the token was issued (in epoch seconds).
+     */
     @JsonProperty("iat")
-    public long iat; // Issued at
+    public long iat;
 
+    /**
+     * The issuer of the token.
+     */
     @JsonProperty("iss")
-    public String iss; // Issuer
+    public String iss;
 
+    /**
+     * The username associated with the token.
+     */
     @JsonProperty
-    public String username; // Username
+    public String username;
 
+    /**
+     * The roles assigned to the token.
+     */
     @JsonProperty
-    public List<String> roles; // Roles
+    public List<String> roles;
 
     public Claims() {
     }
@@ -35,36 +51,65 @@ public class Claims {
     }
 
     /**
-     * Check if the token has expired
-     * 
-     * @return
+     * Checks if the token has expired.
+     *
+     * @return {@code true} if the token is expired, otherwise {@code false}.
      */
     public boolean isExpired() {
         return exp < Instant.now().getEpochSecond();
     }
 
-    // Check if the token was issued by the given issuer
+    /**
+     * Checks if the token was issued by the given issuer.
+     *
+     * @param issuer the issuer to check against.
+     * @return {@code true} if the token was issued by the given issuer, otherwise
+     *         {@code false}.
+     */
     public boolean isIssuedBy(String issuer) {
         return this.iss.equals(issuer);
     }
 
-    // Check if the token was issued for the given issuer
+    /**
+     * Checks if the token was issued for the given username.
+     *
+     * @param user the username to check against.
+     * @return {@code true} if the token was issued for the given user, otherwise
+     *         {@code false}.
+     */
     public boolean isIssuedFor(String user) {
         return this.username.equals(user);
     }
 
-    // Check if the token has the given role
+    /**
+     * Checks if the token has the given role.
+     *
+     * @param role the role to check against.
+     * @return {@code true} if the token contains the given role, otherwise
+     *         {@code false}.
+     */
     public boolean hasRole(String role) {
         return roles.contains(role);
     }
 
-    // Deserialize JSON
+    /**
+     * Deserializes a JSON string to a {@code Claims} object.
+     *
+     * @param json the JSON string representing a {@code Claims} object.
+     * @return the {@code Claims} object deserialized from the JSON string.
+     * @throws IOException if there is an error during deserialization.
+     */
     public static Claims fromJson(String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, Claims.class);
     }
 
-    // Serialize JSON
+    /**
+     * Serializes the {@code Claims} object to a JSON string.
+     *
+     * @return a JSON string representation of the {@code Claims} object.
+     * @throws IOException if there is an error during serialization.
+     */
     public String toJson() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(this);

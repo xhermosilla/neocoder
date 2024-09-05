@@ -16,13 +16,29 @@ public class TokenService {
     private String issuer;
     private int expTime;
     private static final String USERNAME = "";
+    private static final String ROLES = "";
 
+    /**
+     * Constructs a new {@code TokenService} with the given secret, issuer, and
+     * expiration time.
+     *
+     * @param secret  the secret key used for signing the token.
+     * @param issuer  the issuer of the token.
+     * @param expTime the expiration time of the token in seconds.
+     */
     public TokenService(String secret, String issuer, int expTime) {
         this.secret = secret;
         this.issuer = issuer;
         this.expTime = expTime;
     }
 
+    /**
+     * Generates a JWT token for the specified user and roles.
+     *
+     * @param user  the username for whom the token is being generated.
+     * @param roles the roles assigned to the user.
+     * @return the generated JWT token as a {@code String}.
+     */
     private String generate(String user, List<String> roles) {
         Instant now = Instant.now();
         Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -32,10 +48,17 @@ public class TokenService {
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(Date.from(now.plusSeconds(expTime)))
                 .withClaim(USERNAME, user)
-                .withClaim("roles", roles)
+                .withClaim(ROLES, roles)
                 .sign(algorithm);
     }
 
+    /**
+     * Decodes a JWT token into a {@code Claims} object.
+     *
+     * @param token the JWT token to decode.
+     * @return the decoded {@code Claims} object.
+     * @throws InvalidTokenException if the token is invalid or cannot be decoded.
+     */
     public Claims decode(String token) throws InvalidTokenException {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -48,7 +71,7 @@ public class TokenService {
             long iat = decodedJWT.getIssuedAt().getTime() / 1000;
             String iss = decodedJWT.getIssuer();
             String username = decodedJWT.getClaim(USERNAME).asString();
-            List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+            List<String> roles = decodedJWT.getClaim(ROLES).asList(String.class);
 
             return new Claims(exp, iat, iss, username, roles);
 
@@ -57,6 +80,14 @@ public class TokenService {
         }
     }
 
+    /**
+     * Verifies the validity of a JWT token and returns its claims.
+     *
+     * @param token the JWT token to verify.
+     * @return the {@code Claims} object extracted from the verified token.
+     * @throws InvalidTokenException if the token is invalid, expired, or has an
+     *                               incorrect issuer.
+     */
     private Claims verify(String token) throws InvalidTokenException {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -69,7 +100,7 @@ public class TokenService {
             long iat = decodedJWT.getIssuedAt().getTime() / 1000;
             String iss = decodedJWT.getIssuer();
             String username = decodedJWT.getClaim(USERNAME).asString();
-            List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+            List<String> roles = decodedJWT.getClaim(ROLES).asList(String.class);
 
             Claims claims = new Claims(exp, iat, iss, username, roles);
 
@@ -87,6 +118,12 @@ public class TokenService {
         }
     }
 
+    /**
+     * Refreshes the JWT token by generating a new one with the same user and roles.
+     *
+     * @param token the expired or soon-to-be-expired JWT token to refresh.
+     * @return a new JWT token as a {@code String}.
+     */
     public String refresh(String token) {
         Claims payload = verify(token);
         return generate(payload.username, payload.roles);
