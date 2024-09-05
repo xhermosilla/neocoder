@@ -1,4 +1,4 @@
-package org.neocoder.authservice;
+package org.neocoder.services.auth;
 
 import org.mindrot.jbcrypt.BCrypt;
 

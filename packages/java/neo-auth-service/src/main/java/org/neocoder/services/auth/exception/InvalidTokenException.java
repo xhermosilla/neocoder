@@ -1,4 +1,4 @@
-package org.neocoder.authservice.exception;
+package org.neocoder.services.auth.exception;
 
 public class InvalidTokenException extends RuntimeException{
     public InvalidTokenException(String message){
