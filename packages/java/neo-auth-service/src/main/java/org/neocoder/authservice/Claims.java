@@ -1,4 +1,4 @@
-package org.neocoder;
+package org.neocoder.authservice;
 
 import java.io.IOException;
 import java.time.Instant;
