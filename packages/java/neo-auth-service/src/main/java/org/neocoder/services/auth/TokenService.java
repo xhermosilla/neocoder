@@ -15,8 +15,8 @@ public class TokenService {
     private String secret;
     private String issuer;
     private int expTime;
-    private static final String USERNAME = "";
-    private static final String ROLES = "";
+    private static final String USERNAME = "username";
+    private static final String ROLES = "roles";
 
     /**
      * Constructs a new {@code TokenService} with the given secret, issuer, and
