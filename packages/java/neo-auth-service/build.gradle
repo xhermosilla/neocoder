@@ -1,5 +1,14 @@
 plugins {
     id 'java'
+    id 'jacoco'
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }
 
 group = 'org.neocoder'
@@ -21,4 +30,5 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
