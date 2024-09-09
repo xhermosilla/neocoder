@@ -39,7 +39,7 @@ public class TokenService {
      * @param roles the roles assigned to the user.
      * @return the generated JWT token as a {@code String}.
      */
-    private String generate(String user, List<String> roles) {
+    public String generate(String user, List<String> roles) {
         Instant now = Instant.now();
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
@@ -88,7 +88,7 @@ public class TokenService {
      * @throws InvalidTokenException if the token is invalid, expired, or has an
      *                               incorrect issuer.
      */
-    private Claims verify(String token) throws InvalidTokenException {
+    public Claims verify(String token) throws InvalidTokenException {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm)
@@ -126,6 +126,6 @@ public class TokenService {
      */
     public String refresh(String token) {
         Claims payload = verify(token);
-        return generate(payload.username, payload.roles);
+        return generate(payload.getUsername(), payload.getRoles());
     }
 }
