@@ -1,8 +1,10 @@
-import static org.junit.jupiter.api.Assertions.*;
+package org.neocoder.services.auth;
 
-import java.util.Arrays;
-import org.neocoder.services.auth.Claims;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.Instant;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
