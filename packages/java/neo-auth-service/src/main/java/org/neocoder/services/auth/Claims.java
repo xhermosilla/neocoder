@@ -13,31 +13,31 @@ public class Claims {
      * Expiration time of the token (in epoch seconds).
      */
     @JsonProperty("exp")
-    public long exp;
+    private long exp;
 
     /**
      * The time at which the token was issued (in epoch seconds).
      */
     @JsonProperty("iat")
-    public long iat;
+    private long iat;
 
     /**
      * The issuer of the token.
      */
     @JsonProperty("iss")
-    public String iss;
+    private String iss;
 
     /**
      * The username associated with the token.
      */
     @JsonProperty
-    public String username;
+    private String username;
 
     /**
      * The roles assigned to the token.
      */
     @JsonProperty
-    public List<String> roles;
+    private List<String> roles;
 
     public Claims() {
     }
@@ -49,6 +49,50 @@ public class Claims {
         this.username = username;
         this.roles = roles;
     }
+
+    // Getters and Setters
+
+    public long getExp() {
+        return exp;
+    }
+
+    public void setExp(long exp) {
+        this.exp = exp;
+    }
+
+    public long getIat() {
+        return iat;
+    }
+
+    public void setIat(long iat) {
+        this.iat = iat;
+    }
+
+    public String getIss() {
+        return iss;
+    }
+
+    public void setIss(String iss) {
+        this.iss = iss;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    // Methods
 
     /**
      * Checks if the token has expired.
