@@ -13,31 +13,31 @@ public class Claims {
      * Expiration time of the token (in epoch seconds).
      */
     @JsonProperty("exp")
-    public long exp;
+    private long exp;
 
     /**
      * The time at which the token was issued (in epoch seconds).
      */
     @JsonProperty("iat")
-    public long iat;
+    private long iat;
 
     /**
      * The issuer of the token.
      */
     @JsonProperty("iss")
-    public String iss;
+    private String iss;
 
     /**
      * The username associated with the token.
      */
     @JsonProperty
-    public String username;
+    private String username;
 
     /**
      * The roles assigned to the token.
      */
     @JsonProperty
-    public List<String> roles;
+    private List<String> roles;
 
     public Claims() {
     }

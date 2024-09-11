@@ -126,6 +126,6 @@ public class TokenService {
      */
     public String refresh(String token) {
         Claims payload = verify(token);
-        return generate(payload.username, payload.roles);
+        return generate(payload.getUsername(), payload.getRoles());
     }
 }
