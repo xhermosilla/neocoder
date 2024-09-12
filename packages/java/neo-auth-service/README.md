@@ -26,38 +26,21 @@ The `TokenService` class provides methods for generating and verifying JWTs. To 
 
 ## Running Tests
 
-You need to have gradle on your project.
-You need to open the terminal and run this command 
+To run the test, open a terminal in the root of the service folder and execute the following command:
+
 ```bash
     ./gradlew test
 ```
-
-Test results will be available in the build/reports/tests/test directory in HTML format.
 
 ## Running coverage
 
 You need to have gradle on your project.
 
-1. Add the Jacoco plugin to your `build.gradle`:
 
-```groovy
-plugins {
-    id 'java'
-    id 'jacoco'
-}
-
-test {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
-}
-```
-
-2. You need to open the terminal and run this command 
+To run the coverage, open a terminal in the root of the service folder and execute the following command: 
 ```bash
     ./gradlew jacocoTestReport
 ```
-
-3. Coverage results will be available in the build/reports/jacoco/test/html directory in HTML format.
 
 ## Contributing
 
