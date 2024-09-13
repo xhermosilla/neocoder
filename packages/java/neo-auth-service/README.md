@@ -26,11 +26,21 @@ The `TokenService` class provides methods for generating and verifying JWTs. To 
 
 ## Running Tests
 
-Actually, we don't have any test.
+To run the test, open a terminal in the root of the service folder and execute the following command:
+
+```bash
+    ./gradlew test
+```
 
 ## Running coverage
 
 You need to have gradle on your project.
+
+
+To run the coverage, open a terminal in the root of the service folder and execute the following command: 
+```bash
+    ./gradlew jacocoTestReport
+```
 
 ## Contributing
 
