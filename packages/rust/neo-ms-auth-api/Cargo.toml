@@ -1,0 +1,29 @@
+[package]
+name = "neo-ms-auth-api"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "neo-ms-auth-api"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "4"
+derive_more = "0.99.17"
+neo-auth-service = { path = "../neo-auth-service" }
+neo-ms = { path = "../neo-ms" }
+reqwest = { version = "0.11.22", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1", features = [ "v4", "fast-rng", "macro-diagnostics" ] }
+kv-log-macro = "1.0.7"
+envy = "0.4.2"
+json_env_logger = "0.1.1"
+futures-util = "0.3.30"
+dotenv = "0.15.0"
+chrono = "0.4.38"
+
+[package.metadata.scripts]                           # cargo install cargo-run-script
+# cargo run-script ...
+watch = "cargo watch -x 'run --bin aura-ms-i18n'"      # cargo install cargo-watch
