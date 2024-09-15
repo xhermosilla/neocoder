@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// The payload of a JSON Web Token (JWT)
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Claims {
     /// Expiration Time, the time at which the token expires
     /// This is a Unix timestamp

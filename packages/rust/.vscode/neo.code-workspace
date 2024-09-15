@@ -1,0 +1,14 @@
+{
+	"folders": [
+        {
+            "path": "../neo-auth-service"
+        },
+        {
+            "path": "../neo-ms"
+        },
+        {
+            "path": "../neo-ms-auth-api"
+        }
+    ],
+    "settings": {}
+}

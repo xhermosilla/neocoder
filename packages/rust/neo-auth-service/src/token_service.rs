@@ -4,7 +4,7 @@ use jsonwebtoken as jwt;
 /// Service for generating, verifying, and managing JSON Web Tokens (JWTs)
 pub struct TokenService {
     /// Expiration Time, the time at which the token expires in seconds
-    pub exp: i32,
+    pub exp: i64,
     /// Issuer, the entity that issued the JWT
     pub iss: String,
     /// The secret key used to sign the JWT
@@ -13,7 +13,7 @@ pub struct TokenService {
 
 impl TokenService {
     /// Create a new AuthService
-    pub fn new(secret: &str, iss: &str, exp: i32) -> TokenService {
+    pub fn new(secret: &str, iss: &str, exp: i64) -> TokenService {
         TokenService {
             exp,
             iss: iss.to_string(),

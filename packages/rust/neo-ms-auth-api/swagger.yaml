@@ -1,0 +1,240 @@
+openapi: 3.0.3
+info:
+  title: Neo Authentication Api Service
+  description: |-
+    This service acts as an API for managing user authentication, leveraging the neo-auth-service crate to handle tokens and secure authentication.
+    Some useful links:
+    - [The Neocoder repository](https://github.com/xhermosilla/neocoder)
+    - [The source API definition for the Pet Store](https://github.com/xhermosilla/neocoder/blob/master/src/main/resources/openapi.yaml)
+  contact:
+    url: https://github.com/xhermosilla/neocoder
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:3010/neo/api/v1
+tags:
+  - name: neo
+    description: Operations about Neo services
+  - name: operations
+    description: Operations about operations
+  - name: auth
+    description: Operations about authentication
+paths:
+  /health:
+    get:
+      tags:
+        - operations
+        - neo
+        - health
+      summary: Health check
+      description: Check the health of the service
+      operationId: health
+      parameters:
+        - $ref: "#/components/parameters/correlator"
+      responses:
+        "200":
+          description: Service is healthy
+          headers:
+            correlator:
+              $ref: "#/components/headers/correlator"  
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+  /auth/login:
+    post:
+      tags:
+        - auth
+        - neo
+        - login
+      summary: Login
+      description: Login to the service
+      operationId: login
+      parameters:
+        - $ref: "#/components/parameters/correlator"
+      requestBody:
+        $ref: "#/components/requestBodies/Login"
+      responses:
+        "200":
+          description: Login successful
+          headers:
+            correlator:
+              $ref: "#/components/parameters/correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /auth/refresh:
+    post:
+      tags:
+        - auth
+        - neo
+        - refresh
+      summary: Refresh
+      description: Refresh token
+      operationId: refresh
+      security:
+        - bearer_auth: []
+      parameters:
+        - $ref: "#/components/parameters/correlator"
+      responses:
+        "200":
+          description: Refresh token successful
+          headers:
+            correlator:
+              $ref: "#/components/parameters/correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /auth/validate:
+    get:
+      tags:
+        - auth
+        - neo
+        - validate
+      summary: Validate
+      description: Validate token
+      operationId: validate
+      security:
+        - bearer_auth: []
+      parameters:
+        - $ref: "#/components/parameters/correlator"
+      responses:
+        "200":
+          description: Validate token successful
+          headers:
+            correlator:
+              $ref: "#/components/parameters/correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidateTokenResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+components:
+  headers:
+    correlator:
+      schema:
+        type: string
+        example: "f1499450-80ca-4108-8a77-ea308a55d9a8"
+        description: The correlation ID
+  parameters:
+    correlator:
+      name: correlator
+      in: header
+      required: false
+      schema:
+        $ref: "#/components/headers/correlator"
+  requestBodies:
+    Login:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                example: "admin"
+              password:
+                type: string
+                example: "admin"
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  schemas:
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "OK"
+          description: The status of the service
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 401
+          description: Error status code
+        error:
+          type: string
+          example: "Unauthorized"
+          description: Error message
+        message:
+          type: string
+          example: "Invalid credentials"
+          description: Description message
+    TokenResponse:
+      type: object
+      properties:
+        expires:
+          type: number
+          example: 3600
+          description: Expiration time for the token
+        token:
+          type: string
+          example: "xxx.yyy.zzz"
+          description: Token for authentication
+        token_type:
+          type: string
+          example: "Bearer"
+          description: Token type
+    ValidateTokenResponse:
+      type: object
+      properties:
+        expires:
+          type: number
+          example: 3600
+          description: Expiration time for the token
+        expires_formatted:
+          type: string
+          example: "2024-09-13 15:41:15 +02:00"
+          description: Expiration time formatted
+        valid:
+          type: boolean
+          example: true
+          description: Is the token valid?
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
