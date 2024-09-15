@@ -1,4 +1,4 @@
 max_width = 120
-# Mantener parámetros de función en la misma línea si es posible
+# # Parametes in same line if posible parámetros de función en la misma línea si es posible
 fn_args_layout = "Compressed"
 fn_single_line = true

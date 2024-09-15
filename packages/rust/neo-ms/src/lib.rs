@@ -1,5 +1,4 @@
 mod app;
-// mod statestore;
 
 pub use app::middlewares::SecurityMiddleware;
 pub use app::model::{CustomError, ErrorResponse};
