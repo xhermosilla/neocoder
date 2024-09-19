@@ -39,6 +39,14 @@ paths:
               schema:
                 type: object
                 properties:
+                  expires:
+                    type: integer
+                    description: Token expiration time in seconds.
+                    example: 3600
+                  token_type:
+                    type: string
+                    description: The type of the token returned. 
+                    example: Bearer
                   token:
                     type: string
                     description: JWT access token.
@@ -70,6 +78,14 @@ paths:
               schema:
                 type: object
                 properties:
+                  expires:
+                    type: integer
+                    description: Token expiration time in seconds.
+                    example: 3600
+                  token_type:
+                    type: string
+                    description: The type of the token returned. 
+                    example: Bearer
                   token:
                     type: string
                     description: Refreshed JWT token.
