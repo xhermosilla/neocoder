@@ -10,20 +10,22 @@ name = "neo-ms-auth-api"
 
 [dependencies]
 actix-web = "4"
-derive_more = "0.99.17"
+derive_more = "1.0.0"
 neo-auth-service = { path = "../neo-auth-service" }
 neo-ms = { path = "../neo-ms" }
-reqwest = { version = "0.11.22", features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-uuid = { version = "1", features = [ "v4", "fast-rng", "macro-diagnostics" ] }
-kv-log-macro = "1.0.7"
+uuid = { version = "1", features = ["v4", "fast-rng", "macro-diagnostics"] }
 envy = "0.4.2"
-json_env_logger = "0.1.1"
 futures-util = "0.3.30"
 dotenv = "0.15.0"
 chrono = "0.4.38"
+structured-logger = "1.0.3"
+log = { version = "0.4.22" }
 
-[package.metadata.scripts]                           # cargo install cargo-run-script
+[dev-dependencies]
+ctor = "0.2.8"
+
+[package.metadata.scripts] # cargo install cargo-run-script
 # cargo run-script ...
-watch = "cargo watch -x 'run --bin aura-ms-i18n'"      # cargo install cargo-watch
+watch = "cargo watch -x 'run --bin neo-ms-auth-api'" # cargo install cargo-watch

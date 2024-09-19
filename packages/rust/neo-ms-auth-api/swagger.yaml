@@ -17,15 +17,15 @@ servers:
 tags:
   - name: neo
     description: Operations about Neo services
-  - name: operations
-    description: Operations about operations
+  - name: health
+    description: Health check operations
   - name: auth
     description: Operations about authentication
 paths:
   /health:
     get:
       tags:
-        - operations
+        - auth
         - neo
         - health
       summary: Health check
@@ -61,7 +61,7 @@ paths:
           description: Login successful
           headers:
             correlator:
-              $ref: "#/components/parameters/correlator"
+              $ref: "#/components/headers/correlator"
           content:
             application/json:
               schema:
@@ -88,7 +88,7 @@ paths:
           description: Refresh token successful
           headers:
             correlator:
-              $ref: "#/components/parameters/correlator"
+              $ref: "#/components/headers/correlator"
           content:
             application/json:
               schema:
@@ -117,7 +117,7 @@ paths:
           description: Validate token successful
           headers:
             correlator:
-              $ref: "#/components/parameters/correlator"
+              $ref: "#/components/headers/correlator"
           content:
             application/json:
               schema:
@@ -141,9 +141,11 @@ components:
       in: header
       required: false
       schema:
-        $ref: "#/components/headers/correlator"
+        type: string
   requestBodies:
     Login:
+      description: Login request
+      required: true
       content:
         application/json:
           schema:
@@ -223,8 +225,8 @@ components:
       properties:
         expires:
           type: number
-          example: 3600
-          description: Expiration time for the token
+          example: 1726749339
+          description: Expiration time for the token in unix time
         expires_formatted:
           type: string
           example: "2024-09-13 15:41:15 +02:00"

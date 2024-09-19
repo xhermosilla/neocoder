@@ -1,17 +1,16 @@
 use std::sync::Arc;
 
-use crate::{app::middlewares::RequestStateMiddleware, str, Correlator, NeoAppState};
+use crate::{app::middlewares::RequestStateMiddleware, Correlator, NeoAppState};
 
 use super::{error_handler::error_handler, model::NeoApp};
 use actix_web::{middleware::Logger, web, App, HttpServer};
-use kv_log_macro as log;
 
 pub struct NeoMicroService {}
 
 impl NeoMicroService {
     pub async fn run<S, M>(app: NeoApp, state: S, modules: M)
     where
-        S:  NeoAppState + Clone + Send + 'static ,
+        S: NeoAppState + Clone + Send + 'static,
         M: Fn(&mut web::ServiceConfig) + Clone + Send + 'static,
     {
         let app_name = app.name;
@@ -20,10 +19,10 @@ impl NeoMicroService {
         let neo_state: Arc<dyn NeoAppState> = Arc::new(state.clone());
 
         let log_error = |e: std::io::Error| {
-            log::error!("Server cannot start {}", e.to_string(), { corr: Correlator::SYSTEM });
+            log::error!(corr = Correlator::SYSTEM; "Server cannot start {}", e.to_string());
         };
 
-        log::info!("Starting server", { corr: Correlator::SYSTEM, name: str!(app_name) });
+        log::info!(corr = Correlator::SYSTEM, name = app_name; "Starting server");
 
         let server = HttpServer::new(move || {
             App::new()
@@ -46,7 +45,7 @@ impl NeoMicroService {
         }
         .run();
 
-        log::info!("Server listening to {}:{}", config.host, config.port, { corr: Correlator::SYSTEM });
+        log::info!(corr = Correlator::SYSTEM; "Server listening to {}:{}", config.host, config.port);
 
         if let Err(e) = server.await {
             log_error(e);

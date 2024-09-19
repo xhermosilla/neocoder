@@ -1,8 +1,7 @@
 use actix_web::{post, web, HttpRequest};
 use chrono::FixedOffset;
-use kv_log_macro as log;
 use neo_ms::CustomError;
-use neo_ms::{str, NeoAppState};
+use neo_ms::NeoAppState;
 
 use crate::auth::model::ValidateTokenResponse;
 use crate::state::AppState;
@@ -18,10 +17,10 @@ pub async fn login(
 ) -> Result<web::Json<TokenResponse>, CustomError> {
     let corr = ctx.get_corr(&req);
 
-    log::info!("Login request", { corr: str!(corr), username: str!(&credentials.username) });
+    log::info!(corr = corr.as_str(), username = credentials.username; "Login request");
 
     if credentials.username != "admin" || credentials.password != "admin" {
-        log::error!("Login unauthorized", { corr: str!(corr) });
+        log::error!(corr = corr.as_str(); "Login unauthorized");
         return Err(CustomError::UnauthorizedDefault);
     }
 
@@ -30,7 +29,7 @@ pub async fn login(
         .generate(&credentials.username, vec![String::from("admin")])
         .map_err(|_| CustomError::Unknown)?;
 
-    log::info!("Login successful", { corr: str!(corr), username: str!(&credentials.username) });
+    log::info!( corr = corr.as_str(), username = credentials.username; "Login successful");
 
     return Ok(web::Json(TokenResponse {
         expires: ctx.config.cfg.auth_expiration,
@@ -44,16 +43,18 @@ pub async fn login(
 /// Path: [POST] /refresh
 pub async fn refresh(ctx: web::Data<AppState>, req: HttpRequest) -> Result<web::Json<TokenResponse>, CustomError> {
     let corr = ctx.get_corr(&req);
-    let old_token = ctx.get_token_from_auth_header(&req).unwrap();
+    let old_token = ctx
+        .get_token_from_auth_header(&req)
+        .ok_or(CustomError::Unauthorized("Invalid token".to_string()))?;
 
-    log::info!("Refresh token request", { corr: str!(corr) });
+    log::info!(corr = corr.as_str(); "Refresh token request");
 
     let token = ctx
         .token_service
         .refresh(&old_token)
         .map_err(|_| CustomError::InternalError("Error refreshing token".to_string()))?;
 
-    log::info!("Token refreshed", { corr: str!(corr) });
+    log::info!(corr = corr.as_str(); "Token refreshed");
 
     return Ok(web::Json(TokenResponse {
         expires: ctx.config.cfg.auth_expiration,
@@ -67,9 +68,11 @@ pub async fn refresh(ctx: web::Data<AppState>, req: HttpRequest) -> Result<web::
 /// Path: [POST] /validate
 pub async fn validate(ctx: web::Data<AppState>, req: HttpRequest) -> Result<web::Json<ValidateTokenResponse>, CustomError> {
     let corr = ctx.get_corr(&req);
-    let token = ctx.get_token_from_auth_header(&req).unwrap();
+    let token = ctx
+        .get_token_from_auth_header(&req)
+        .ok_or(CustomError::Unauthorized("Invalid token".to_string()))?;
 
-    log::info!("Validate token request", { corr: str!(corr) });
+    log::info!(corr = corr.as_str(); "Validate token request");
 
     let claims = ctx
         .token_service
@@ -81,7 +84,7 @@ pub async fn validate(ctx: web::Data<AppState>, req: HttpRequest) -> Result<web:
         .unwrap()
         .with_timezone(&FixedOffset::east_opt(2 * 3600).unwrap());
 
-    log::info!("Token validated", { corr: str!(corr), claims: serde_json::to_string(&claims).unwrap() });
+    log::info!(corr = corr.as_str(), claims = serde_json::to_string(&claims).unwrap(); "Token validated");
 
     return Ok(web::Json(ValidateTokenResponse {
         expires: claims.exp,

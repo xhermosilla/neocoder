@@ -1,4 +1,3 @@
-use kv_log_macro as log;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 use crate::Correlator;
@@ -28,7 +27,7 @@ where
                 cfg,
             },
             Err(e) => {
-                log::error!("Cannot load app configuration: {}", e.to_string(), { corr: Correlator::SYSTEM });
+                log::error!(corr = Correlator::SYSTEM; "Cannot load app configuration: {}", e.to_string());
                 std::process::exit(1);
             }
         }
