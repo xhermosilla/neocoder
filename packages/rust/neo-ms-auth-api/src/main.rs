@@ -1,13 +1,9 @@
 use actix_web::web::scope;
-use config::Configuration;
 use dotenv::dotenv;
-use kv_log_macro as log;
-use neo_ms::{AppConfig, Correlator, NeoApp, NeoMicroService, ServerConfiguration};
-use state::AppState;
+use structured_logger::Builder;
 
-mod auth;
-mod config;
-mod state;
+use neo_ms::{AppConfig, Correlator, NeoApp, NeoMicroService, ServerConfiguration};
+use neo_ms_auth_api::{auth, config::Configuration, state::AppState};
 
 #[actix_web::main]
 async fn main() {
@@ -15,22 +11,27 @@ async fn main() {
     dotenv().ok();
 
     // Initialize the logger system
-    json_env_logger::init();
+    Builder::with_level("debug").init();
 
     // Load configuration from environment variables
-    log::info!("Reading configuration from environment variables", { corr: Correlator::SYSTEM });
+    log::info!( corr = Correlator::SYSTEM; "Reading configuration from environment variables");
     let config: AppConfig<Configuration> = AppConfig::from_env();
-    log::info!("Configuration loaded", { corr: Correlator::SYSTEM, config: serde_json::to_string(&config.cfg).unwrap() });
+
+    log::info!(
+        corr = Correlator::SYSTEM,
+        config = serde_json::to_string(&config.cfg).unwrap();
+        "Configuration loaded"
+    );
 
     // Create application state
-    log::info!("Creating application state", { corr: Correlator::SYSTEM });
+    log::info!( corr = Correlator::SYSTEM; "Creating application state");
     let state = AppState::new(config.clone());
-    log::info!("Application state created successfully", { corr: Correlator::SYSTEM });
+    log::info!( corr = Correlator::SYSTEM; "Application state created successfully");
 
     // Start the microservice with configuration
     NeoMicroService::run(
         NeoApp {
-            name: "aura-ms-i18n",
+            name: "neo-ms-auth-api",
             version: "1.0.0",
             server: ServerConfiguration {
                 host: config.cfg.server_host,

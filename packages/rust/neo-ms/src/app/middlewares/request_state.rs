@@ -62,7 +62,6 @@ where
         let fut = self.service.call(req);
         Box::pin(async move {
             let mut response = fut.await?;
-            println!("Setting correlator: {}", corr);
             response
                 .headers_mut()
                 .insert(HeaderName::from_static("correlator"), HeaderValue::from_str(&corr).unwrap());

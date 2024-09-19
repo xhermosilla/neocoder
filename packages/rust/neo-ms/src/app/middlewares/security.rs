@@ -4,13 +4,12 @@ use actix_web::{
 };
 use core::panic;
 use futures_util::future::LocalBoxFuture;
-use kv_log_macro as log;
 use std::{
     future::{ready, Ready},
     sync::Arc,
 };
 
-use crate::{str, CustomError, NeoAppState};
+use crate::{CustomError, NeoAppState};
 
 // Define el middleware
 pub struct SecurityMiddleware;
@@ -49,8 +48,6 @@ where
     fn call(&self, req: ServiceRequest) -> Self::Future {
         let app_state: Option<&web::Data<Arc<dyn NeoAppState>>> = req.app_data();
 
-        println!("entrando");
-        
         if app_state.is_none() {
             panic!("Token validator not found. Please add the TokenValidator to the app data.");
         }
@@ -61,14 +58,14 @@ where
         if let (Some(token), Some(state)) = (token, app_state) {
             let claims = state.validate_token(&token);
             if let Ok(claims) = claims {
-                log::info!("Request authorized", { corr: str!(corr), claims: serde_json::to_string(&claims).unwrap() });
+                log::info!(corr = corr.as_str(), claims= serde_json::to_string(&claims).unwrap().as_str(); "Request authorized");
 
                 state.set_claims(req.request(), claims);
                 return Box::pin(self.service.call(req));
             }
         }
 
-        log::warn!("Request unauthorized", { corr: str!(corr) });
+        log::warn!(corr = corr.as_str(); "Request unauthorized");
         Box::pin(async move { Err(CustomError::Unauthorized("Invalid token".to_string()).into()) })
     }
 }

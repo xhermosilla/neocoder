@@ -3,7 +3,7 @@ FROM rust:latest
 WORKDIR /usr/src
 
 # TODO: Copy dependencies, remove when libraries are published
-COPY ./../aura-ms ./aura-ms
+COPY ./../neo-ms-auth-api ./neo-ms-auth-api
 
 RUN ls -la
 
