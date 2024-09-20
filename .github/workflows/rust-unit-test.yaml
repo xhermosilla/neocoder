@@ -42,6 +42,7 @@ jobs:
             packages=${{ github.event.inputs.package }}
           fi
           packages=$(echo $packages | jq -R -c 'split(" ")')
+          echo "Packages to test: $packages"
           echo "packages=$packages" >> $GITHUB_STATE
 
   # unit-tests:
