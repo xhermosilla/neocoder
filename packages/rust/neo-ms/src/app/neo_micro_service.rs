@@ -1,3 +1,4 @@
+use actix_files as fs;
 use std::sync::Arc;
 
 use crate::{app::middlewares::RequestStateMiddleware, Correlator, NeoAppState};
@@ -33,6 +34,7 @@ impl NeoMicroService {
                 .app_data(web::Data::new(neo_state.clone()))
                 .configure(modules.clone())
                 .configure(super::routes::service_config)
+                .service(fs::Files::new("/api-doc", "./static/api-doc").show_files_listing())
         })
         .bind((config.host.clone(), config.port));
 

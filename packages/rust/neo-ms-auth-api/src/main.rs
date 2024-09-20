@@ -1,5 +1,8 @@
+use std::str::FromStr;
+
 use actix_web::web::scope;
 use dotenv::dotenv;
+use log::{set_max_level, LevelFilter};
 use structured_logger::Builder;
 
 use neo_ms::{AppConfig, Correlator, NeoApp, NeoMicroService, ServerConfiguration};
@@ -17,9 +20,11 @@ async fn main() {
     log::info!( corr = Correlator::SYSTEM; "Reading configuration from environment variables");
     let config: AppConfig<Configuration> = AppConfig::from_env();
 
+    set_max_level(LevelFilter::from_str(&config.cfg.log_level).expect("Invalid log level"));
+
     log::info!(
         corr = Correlator::SYSTEM,
-        config = serde_json::to_string(&config.cfg).unwrap();
+        config = serde_json::to_string(&config.cfg).unwrap_or("".to_string());
         "Configuration loaded"
     );
 

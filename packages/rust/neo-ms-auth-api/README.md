@@ -5,7 +5,10 @@
 ## Features
 
 - JWT-based Authentication: Generates and verifies JWT tokens for secure authentication.
-- Security: Secure handling of passwords and tokens.
+
+## Api Documentation
+
+The API definition is available in the `swagger.yaml` file located in the root of the project. You can use Swagger Editor to visualize the API definition.
 
 ## Installation
 
@@ -28,13 +31,15 @@ Make sure you have Rust installed.
 
 The service requires some basic configurations, such as the secret key for tokens and other environment parameters. You can set these configurations in a .env file located at the root of the project:
 
-| Variable            | Description                                     | Default     |
-| :------------------ | :---------------------------------------------- | :---------- |
-| APP_AUTH_EXPIRATION | Contains the expiration time for the JWT tokens | 86400       |
-| APP_AUTH_ISSUER     | Contains the issuer for the JWT tokens          | "neo"       |
-| APP_AUTH_SECRET_KEY | Contains the secret key for the JWT tokens      | -           |
-| APP_SERVER_HOST     | Server host                                     | "localhost" |
-| APP_SERVER_PORT     | Server port                                     | 3010        |
+| Variable            | Description                                     | Default      |
+| :------------------ | :---------------------------------------------- | :----------- |
+| APP_API_BASE_URL    | API base URL                                    | "neo/api/v1" |
+| APP_AUTH_EXPIRATION | Contains the expiration time for the JWT tokens | 86400        |
+| APP_AUTH_ISSUER     | Contains the issuer for the JWT tokens          | "neo"        |
+| APP_AUTH_SECRET_KEY | Contains the secret key for the JWT tokens      | -            |
+| APP_LOG_LEVEL       | Log level                                       | "INFO"       |
+| APP_SERVER_HOST     | Server host                                     | "localhost"  |
+| APP_SERVER_PORT     | Server port                                     | 3010         |
 
 (The variables that not have a default value are required to be set)
 
@@ -48,19 +53,43 @@ sops -d .env.enc > .env
 
 > You need to have the `sops` key to decrypt the file exported as SOPS_AGE_KEY environment variable. The key is stored in the `SOPS_AGE_KEY` secret in the repository. If you do not have access, request it from the person responsible for the project.
 
-### Running the Service
+### Building the service
 
-To start the service, you can use the following command. Ensure that the RUST_LOG environment variable is set for proper logging:
+To build the service, you can use the following command:
 
 ```bash
-RUST_LOG=info cargo run
+cargo build
+```
+
+This command will compile the project and generate the necessary files in the `target` directory.
+
+If you want to build the project for production, you can use the following command:
+
+```bash
+cargo build --release
+```
+
+This command will optimize the build for production, generating the necessary files in the `target/release` directory.
+
+### Running the service
+
+To start the service in development mode, you can use the following command:
+
+```bash
+cargo run
+```
+
+You can also run the service in watch mode, which will automatically restart the server when you make changes to the code:
+
+```bash
+cargo run-script watch
 ```
 
 This command will start the API server, and it will listen for incoming requests. The service load the configurations from the `.env` file. 
 
 You can access the API at `http://localhost:3010`.
 
-### Testing the API
+### Testing the Rest Api service
 
 To verify that everything is working correctly, you can run the provided tests:
 
@@ -79,8 +108,10 @@ cargo install cargo-llvm-cov
 You can run coverage using:
 
 ```bash
-cargo llvm-cov
+cargo llvm-cov # or cargo llvm-cov --summary-only
 ```
+
+You can also generate a report in HTML format:
 
 ```bash
 cargo llvm-cov --open

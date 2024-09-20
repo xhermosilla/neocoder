@@ -5,7 +5,7 @@ info:
     This service acts as an API for managing user authentication, leveraging the neo-auth-service crate to handle tokens and secure authentication.
     Some useful links:
     - [The Neocoder repository](https://github.com/xhermosilla/neocoder)
-    - [The source API definition for the Pet Store](https://github.com/xhermosilla/neocoder/blob/master/src/main/resources/openapi.yaml)
+    - [The source API definition for Neo Authentication Service](https://github.com/xhermosilla/neocoder/blob/main/packages/rust/neo-ms-auth-api/swagger.yaml)
   contact:
     url: https://github.com/xhermosilla/neocoder
   license:
@@ -15,18 +15,12 @@ info:
 servers:
   - url: http://localhost:3010/neo/api/v1
 tags:
-  - name: neo
-    description: Operations about Neo services
-  - name: health
-    description: Health check operations
-  - name: auth
-    description: Operations about authentication
+  - name: neo-authentication
+    description: Operations about neo authentication api services
 paths:
   /health:
     get:
       tags:
-        - auth
-        - neo
         - health
       summary: Health check
       description: Check the health of the service
@@ -43,12 +37,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Health"
+      servers:
+        - url: http://localhost:3010
+          description: Server for health check endpoint
   /auth/login:
     post:
       tags:
         - auth
-        - neo
-        - login
       summary: Login
       description: Login to the service
       operationId: login
@@ -74,8 +69,6 @@ paths:
     post:
       tags:
         - auth
-        - neo
-        - refresh
       summary: Refresh
       description: Refresh token
       operationId: refresh
@@ -103,8 +96,6 @@ paths:
     get:
       tags:
         - auth
-        - neo
-        - validate
       summary: Validate
       description: Validate token
       operationId: validate
