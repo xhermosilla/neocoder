@@ -19,40 +19,20 @@ on:
         default: ""
 
 jobs:
-  unit-tests:
-    name: Run unit tests
+  get-packages:
+    name: Get packages to test
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        package: ${{ fromJson(needs.set-matrix.outputs.packages) }}
-      fail-fast: false
-
+    outputs:
+      packages: ${{ steps.get-packages.outputs.packages }}
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
 
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-          override: true
-
-      - name: Run tests for ${{ matrix.package }}
-        working-directory: packages/rust/${{ matrix.package }}
-        run: cargo test --verbose
-
-  set-matrix:
-    name: Set Matrix
-    runs-on: ubuntu-latest
-    outputs:
-      packages: ${{ steps.set-matrix.outputs.packages }}
-    steps:
       - name: Determine packages to test
-        id: set-matrix
+        id: get-packages
         run: |
           # Get all Rust packages if no specific package is specified
           if [ "${{ github.event.inputs.package }}" == "" ]; then
@@ -61,4 +41,32 @@ jobs:
           else
             packages=${{ github.event.inputs.package }}
           fi
+          echo "Packages: $packages"
           echo "::set-output name=packages::$(echo $packages | jq -R -c 'split(" ")')"
+
+  # unit-tests:
+  #   name: Run unit tests
+  #   runs-on: ubuntu-latest
+
+  #   strategy:
+  #     matrix:
+  #       package: ${{ fromJson(needs.set-matrix.outputs.packages) }}
+  #     fail-fast: false
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #       with:
+  #         ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
+
+  #     - name: Set up Rust
+  #       uses: actions-rs/toolchain@v1
+  #       with:
+  #         toolchain: stable
+  #         profile: minimal
+  #         override: true
+
+  #     - name: Run tests for ${{ matrix.package }}
+  #       working-directory: packages/rust/${{ matrix.package }}
+  #       run: cargo test --verbose
+
