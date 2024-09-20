@@ -43,7 +43,7 @@ jobs:
           fi
           packages=$(echo $packages | jq -R -c 'split(" ")')
           echo "Packages to test: $packages"
-          echo "packages=$packages" >> $GITHUB_STATE
+          echo "packages=$packages" >> $GITHUB_OUTPUT
 
   unit-tests:
     name: Run unit tests
@@ -52,7 +52,7 @@ jobs:
 
     strategy:
       matrix:
-        package: ${{ state.packages }}
+        package: ${{ fromJson(needs.get-packages.outputs.packages) }}
       fail-fast: false
 
     steps:
