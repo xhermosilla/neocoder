@@ -1,0 +1,64 @@
+name: (Rust) Unit tests
+
+on:
+  push:
+    paths:
+      - "packages/rust/**"
+  pull_request:
+    paths:
+      - "packages/rust/**"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to run tests on"
+        required: true
+        default: "main"
+      package:
+        description: "Rust package to test (leave empty to test all)"
+        required: false
+        default: ""
+
+jobs:
+  unit-tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.set-matrix.outputs.packages) }}
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Run tests for ${{ matrix.package }}
+        working-directory: packages/rust/${{ matrix.package }}
+        run: cargo test --verbose
+
+  set-matrix:
+    name: Set Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.set-matrix.outputs.packages }}
+    steps:
+      - name: Determine packages to test
+        id: set-matrix
+        run: |
+          # Get all Rust packages if no specific package is specified
+          if [ "${{ github.event.inputs.package }}" == "" ]; then
+            echo "All packages will be tested."
+            packages=$(ls packages/rust)
+          else
+            packages=${{ github.event.inputs.package }}
+          fi
+          echo "::set-output name=packages::$(echo $packages | jq -R -c 'split(" ")')"
