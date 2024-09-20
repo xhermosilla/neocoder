@@ -27,7 +27,7 @@ jobs:
     steps:
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
 
@@ -41,8 +41,8 @@ jobs:
           else
             packages=${{ github.event.inputs.package }}
           fi
-          echo "Packages: $packages"
-          echo "::set-output name=packages::$(echo $packages | jq -R -c 'split(" ")')"
+          packages=$(echo $packages | jq -R -c 'split(" ")')
+          run: echo "packages=$packages" >> $GITHUB_STATE
 
   # unit-tests:
   #   name: Run unit tests
