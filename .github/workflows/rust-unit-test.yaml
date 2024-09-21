@@ -52,7 +52,7 @@ jobs:
           else
             packages=${{ github.event.inputs.package }}
           fi
-          echo -e "\nPackage list: $packages"
+          echo -e ">> Package list: \033[0;36m$packages\033[0m"
           echo "packages=$packages" >> $GITHUB_OUTPUT
 
       - name: Run tests for rust packages
@@ -64,7 +64,7 @@ jobs:
             echo "Packages to test: $packages"
 
             for package in $packages; do
-              echo "\033[0;36m>> Running tests for package: $package\033[0m"
+              echo -e "\033[0;36m>> Running tests for package: $package\033[0m"
               echo "-------------------------------------------------------------------------------"
               (cd packages/rust/$package && cargo test --quiet)
             done
