@@ -47,7 +47,7 @@ jobs:
           # Get all Rust packages if no specific package is specified
           if [ "${{ github.event.inputs.package }}" == "" ]; then
             echo "All packages will be tested."
-            packages=$(ls packages/rust)
+            packages=$(ls packages/rust | tr '\n' ' ')
           else
             packages=${{ github.event.inputs.package }}
           fi
