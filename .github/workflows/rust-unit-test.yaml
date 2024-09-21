@@ -36,6 +36,9 @@ jobs:
       - name: Display directory structure
         run: tree -L 2 packages
 
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+
       - name: Determine packages to test
         id: get-packages
         run: |
