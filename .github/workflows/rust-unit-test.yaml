@@ -56,5 +56,7 @@ jobs:
 
       - name: Run tests for rust packages
         run: |
+          packages="${{ steps.get-packages.outputs.packages }}"
+          echo "Running tests for packages: $packages"
           echo "Running tests for packages ${{ steps.get-packages.outputs.packages }}"
 
