@@ -31,13 +31,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
 
       - name: Display directory structure
         run: tree -L 2 packages
 
-      - name: Fetch base branch
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+      - name: Get all changes between branches
+        run: |
+          # Compara todas las diferencias entre las ramas
+          base_branch="${{ github.event.pull_request.base.ref }}"
+          git fetch origin $base_branch
+          git diff --name-only origin/$base_branch...HEAD
 
       - name: Determine packages to test
         id: get-packages
