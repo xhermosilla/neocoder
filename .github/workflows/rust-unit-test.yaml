@@ -19,21 +19,12 @@ on:
         default: ""
 
 jobs:
+
   unit-tests:
     name: Run unit tests
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        package: ${{ fromJson(needs.set-matrix.outputs.packages) }}
-      fail-fast: false
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.branch }}
-
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -41,18 +32,17 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Run tests for ${{ matrix.package }}
-        working-directory: packages/rust/${{ matrix.package }}
-        run: cargo test --verbose
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
 
-  set-matrix:
-    name: Set Matrix
-    runs-on: ubuntu-latest
-    outputs:
-      packages: ${{ steps.set-matrix.outputs.packages }}
-    steps:
+      - name: Display directory structure
+        run: tree -L 2 packages
+
       - name: Determine packages to test
-        id: set-matrix
+        id: get-packages
         run: |
           # Get all Rust packages if no specific package is specified
           if [ "${{ github.event.inputs.package }}" == "" ]; then
@@ -61,4 +51,16 @@ jobs:
           else
             packages=${{ github.event.inputs.package }}
           fi
-          echo "::set-output name=packages::$(echo $packages | jq -R -c 'split(" ")')"
+          echo "Packages: $packages"
+          echo "packages=$packages" >> $GITHUB_OUTPUT
+
+      - name: Run tests for rust packages
+        run: |
+          packages="${{ steps.get-packages.outputs.packages }}"
+          echo "Packages to test: $packages"
+
+          # Convert JSON array string into a bash array using jq
+          for package in $packages; do
+            echo "Running tests for package: $package"
+            (cd packages/rust/$package && cargo test --verbose)
+          done
