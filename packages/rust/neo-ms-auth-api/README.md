@@ -6,7 +6,7 @@
 
 - JWT-based Authentication: Generates and verifies JWT tokens for secure authentication.
 
-## Api Documentation
+## Api documentation
 
 The API definition is available in the `swagger.yaml` file located in the root of the project. You can use Swagger Editor to visualize the API definition.
 
@@ -97,7 +97,7 @@ To verify that everything is working correctly, you can run the provided tests:
 cargo test
 ```
 
-### Running Coverage
+### Running coverage
 
 You need to have the cargo-llvm-cov library installed:
 
@@ -116,6 +116,22 @@ You can also generate a report in HTML format:
 ```bash
 cargo llvm-cov --open
 ```
+
+## Using docker to run the service
+
+You can use Docker to run the service. To build the Docker image, you can use the following command:
+
+```bash
+docker build -t xhermosilla/neo-ms-auth-api .
+```
+
+This command will build the Docker image with the name `xhermosilla/neo-ms-auth-api`. You can run the Docker container with the following command:
+
+```bash
+docker run -p 3010:3010 --env-file .env xhermosilla/neo-ms-auth-api
+```
+
+This command will start the Docker container and expose the service on port 3010. The service will load the configurations from the `.env` file.
 
 ## Contributing
 

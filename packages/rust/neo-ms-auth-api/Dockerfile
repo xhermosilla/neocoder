@@ -1,18 +1,23 @@
-FROM rust:latest
+FROM rust:1.81 as builder
 
-WORKDIR /usr/src
-
-# TODO: Copy dependencies, remove when libraries are published
-COPY ./../neo-ms-auth-api ./neo-ms-auth-api
-
-RUN ls -la
+RUN apt-get update && apt-get install -y pkg-config libssl-dev
 
 WORKDIR /usr/src/app
 
-COPY . .
+# Copy source code
+COPY Cargo.toml Cargo.lock ./
+COPY ./src ./src
+COPY ./static ./static
 
-RUN cargo build --release
+# Build the release application
+RUN cargo build --release --bin neo-ms-auth-api
 
-RUN cargo install --path .
+FROM gcr.io/distroless/cc as runtime
 
-CMD ["/usr/local/cargo/bin/app"]
+WORKDIR /usr/src/app
+
+# Copy the binary from the builder image
+COPY --from=builder /usr/src/app/target/release/neo-ms-auth-api /usr/src/app/neo-ms-auth-api
+COPY --from=builder /usr/src/app/static /usr/src/app/static
+
+ENTRYPOINT ["/usr/src/app/neo-ms-auth-api"]
