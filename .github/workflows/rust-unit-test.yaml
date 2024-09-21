@@ -57,10 +57,12 @@ jobs:
 
       - name: Run tests for rust packages
         run: |
-          echo "Packages to test: ${{ steps.get-packages.outputs.packages }}"
-          packages=$(echo "${{ fromJson(steps.get-packages.outputs.packages) }}" | jq -r '.[]')
+          # Retrieve output packages and parse them using jq
+          packages="${{ steps.get-packages.outputs.packages }}"
           echo "Packages to test: $packages"
-          for package in $packages; do
+
+          # Convert JSON array string into a bash array using jq
+          for package in $(echo $packages | jq -r '.[]'); do
             echo "Running tests for package: $package"
             (cd packages/rust/$package && cargo test --verbose)
           done
