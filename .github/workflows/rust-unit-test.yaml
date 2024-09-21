@@ -63,10 +63,14 @@ jobs:
           profile: minimal
           override: true
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
+          
       - name: Display directory structure
         run: tree -L 2 packages
 
       - name: Run tests for ${{ matrix.package }}
         working-directory: packages/rust/${{ matrix.package }}
         run: cargo test --verbose
-
