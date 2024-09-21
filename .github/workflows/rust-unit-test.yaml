@@ -31,7 +31,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
           ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
 
       - name: Display directory structure
