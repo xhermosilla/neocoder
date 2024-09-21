@@ -50,6 +50,10 @@ jobs:
           if [ "${{ github.event.inputs.package }}" == "" ]; then
             echo "Determining packages to test based on changes."
             base_branch="${{ github.event.pull_request.base.ref }}"
+
+            git fetch origin $base_branch
+            git diff --name-only origin/$base_branch...HEAD
+
             packages=$(git diff --name-only origin/$base_branch...HEAD | grep '^packages/rust/' | cut -d'/' -f3 | sort -u | tr '\n' ' ')
           else
             packages=${{ github.event.inputs.package }}
@@ -66,7 +70,8 @@ jobs:
             echo "Packages to test: $packages"
 
             for package in $packages; do
-              echo ">> Running tests for package: $package -----------------------"
+              echo ">> Running tests for package: $packages"
+              echo "-------------------------------------------------------------------------------"
               (cd packages/rust/$package && cargo test --quiet)
             done
             
