@@ -58,5 +58,8 @@ jobs:
         run: |
           packages="${{ steps.get-packages.outputs.packages }}"
           echo "Running tests for packages: $packages"
-          echo "Running tests for packages ${{ steps.get-packages.outputs.packages }}"
 
+          for package in $packages; do
+            echo "Running tests for package: $package"
+            # (cd packages/rust/$package && cargo test --verbose)
+          done
