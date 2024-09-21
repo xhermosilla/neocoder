@@ -61,5 +61,5 @@ jobs:
 
           for package in $packages; do
             echo "Running tests for package: $package"
-            (cd packages/rust/$package && cargo test --verbose)
+            (cd packages/rust/$package && cargo test)
           done
