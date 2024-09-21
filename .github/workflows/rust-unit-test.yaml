@@ -64,7 +64,7 @@ jobs:
             echo "Packages to test: $packages"
 
             for package in $packages; do
-              echo ">> Running tests for package: $packages"
+              echo ">> Running tests for package: $package"
               echo "-------------------------------------------------------------------------------"
               (cd packages/rust/$package && cargo test --quiet)
             done
