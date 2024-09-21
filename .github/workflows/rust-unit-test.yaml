@@ -1,9 +1,6 @@
 name: (Rust) Unit tests
 
 on:
-  push:
-    paths:
-      - "packages/rust/**"
   pull_request:
     paths:
       - "packages/rust/**"
@@ -19,7 +16,6 @@ on:
         default: ""
 
 jobs:
-
   unit-tests:
     name: Run unit tests
     runs-on: ubuntu-latest
@@ -44,10 +40,10 @@ jobs:
       - name: Determine packages to test
         id: get-packages
         run: |
-          # Get all Rust packages if no specific package is specified
+          # Get all packages that have been modified
           if [ "${{ github.event.inputs.package }}" == "" ]; then
             echo "All packages will be tested."
-            packages=$(ls packages/rust)
+            packages=$(git diff --name-only HEAD~1 | grep '^packages/rust/' | cut -d'/' -f3 | sort -u | tr '\n' ' ')
           else
             packages=${{ github.event.inputs.package }}
           fi
@@ -57,10 +53,16 @@ jobs:
       - name: Run tests for rust packages
         run: |
           packages="${{ steps.get-packages.outputs.packages }}"
-          echo "Packages to test: $packages"
 
-          # Convert JSON array string into a bash array using jq
-          for package in $packages; do
-            echo "Running tests for package: $package"
-            (cd packages/rust/$package && cargo test --verbose)
-          done
+          if [ ! -z "$packages" ]; then
+
+            echo "Packages to test: $packages"
+
+            for package in $packages; do
+              echo "Running tests for package: $package"
+              (cd packages/rust/$package && cargo test --verbose)
+            done
+            
+          else
+            echo "No packages to test."
+          fi
