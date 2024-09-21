@@ -55,10 +55,12 @@ jobs:
           echo "Packages to test: $packages"
           echo "packages=$packages" >> $GITHUB_OUTPUT
 
-      - name: Run tests for ${{ matrix.package }}
-        working-directory: packages/rust/${{ matrix.package }}
+      - name: Run tests for rust packages
         run: |
-          for package in $(echo "${{ fromJson(steps.get-packages.outputs.packages) }}" | jq -r '.[]'); do
+          echo "Packages to test: ${{ fromJson(steps.get-packages.outputs.packages) }}"
+          packages=$(echo "${{ fromJson(steps.get-packages.outputs.packages) }}" | jq -r '.[]')
+          echo "Packages to test: $packages"
+          for package in $packages; do
             echo "Running tests for package: $package"
             (cd packages/rust/$package && cargo test --verbose)
           done
