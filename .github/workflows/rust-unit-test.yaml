@@ -31,7 +31,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 2
           ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
 
       - name: Display directory structure
@@ -42,7 +42,7 @@ jobs:
         run: |
           # Get all packages that have been modified
           if [ "${{ github.event.inputs.package }}" == "" ]; then
-            echo "All packages will be tested."
+            echo "Determining packages to test based on changes."
             packages=$(git diff --name-only HEAD~1 | grep '^packages/rust/' | cut -d'/' -f3 | sort -u | tr '\n' ' ')
           else
             packages=${{ github.event.inputs.package }}
