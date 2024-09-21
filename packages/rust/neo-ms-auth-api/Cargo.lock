@@ -454,16 +454,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ctor"
-version = "0.2.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "edb49164822f3ee45b17acd4a208cfc1251410cf0cad9a833234c9890774dd9f"
-dependencies = [
- "quote",
- "syn",
-]
-
-[[package]]
 name = "deranged"
 version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -897,7 +887,7 @@ dependencies = [
 [[package]]
 name = "neo-auth-service"
 version = "0.1.0"
-source = "git+https://github.com/xhermosilla/neocoder?branch=feat/rust-auth-microservice#21#b6e71154b17338aad83354c0d7ef4a89958416bc"
+source = "git+https://github.com/xhermosilla/neocoder?branch=feat/rust-auth-microservice#21#914865ec7858abab07a7fb19a36df09a938f84a7"
 dependencies = [
  "chrono",
  "jsonwebtoken",
@@ -907,7 +897,7 @@ dependencies = [
 [[package]]
 name = "neo-ms"
 version = "0.1.0"
-source = "git+https://github.com/xhermosilla/neocoder?branch=feat/rust-auth-microservice#21#b6e71154b17338aad83354c0d7ef4a89958416bc"
+source = "git+https://github.com/xhermosilla/neocoder?branch=feat/rust-auth-microservice#21#914865ec7858abab07a7fb19a36df09a938f84a7"
 dependencies = [
  "actix-files",
  "actix-web",
@@ -927,7 +917,6 @@ version = "0.1.0"
 dependencies = [
  "actix-web",
  "chrono",
- "ctor",
  "dotenv",
  "log",
  "neo-auth-service",
