@@ -65,7 +65,7 @@ jobs:
 
             for package in $packages; do
               echo -e "\033[0;36m>> Running tests for package: $package\033[0m"
-              echo "-------------------------------------------------------------------------------"
+              echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
               (cd packages/rust/$package && cargo test --quiet)
             done
             
