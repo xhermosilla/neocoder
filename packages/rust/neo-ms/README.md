@@ -49,4 +49,3 @@ Contributions are welcome! Feel free to submit a pull request or open an issue o
 ## License
 
 `neo-ms-auth-api`◊ is distributed under the MIT License. See LICENSE for more information.
-
