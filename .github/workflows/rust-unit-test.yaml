@@ -63,6 +63,9 @@ jobs:
           profile: minimal
           override: true
 
+      - name: Display directory structure
+        run: tree -L 2 packages
+
       - name: Run tests for ${{ matrix.package }}
         working-directory: packages/rust/${{ matrix.package }}
         run: cargo test --verbose
