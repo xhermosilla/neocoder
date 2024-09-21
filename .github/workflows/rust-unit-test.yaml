@@ -51,18 +51,16 @@ jobs:
           else
             packages=${{ github.event.inputs.package }}
           fi
-          packages=$(echo $packages | jq -R -c 'split(" ")')
-          echo "Packages to test: $packages"
+          echo "Packages: $packages"
           echo "packages=$packages" >> $GITHUB_OUTPUT
 
       - name: Run tests for rust packages
         run: |
-          # Retrieve output packages and parse them using jq
           packages="${{ steps.get-packages.outputs.packages }}"
           echo "Packages to test: $packages"
 
           # Convert JSON array string into a bash array using jq
-          for package in $(echo $packages | jq -r '.[]'); do
+          for package in $packages; do
             echo "Running tests for package: $package"
             (cd packages/rust/$package && cargo test --verbose)
           done
