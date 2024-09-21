@@ -19,9 +19,6 @@ chrono = "0.4.38"
 structured-logger = "1.0.3"
 log = { version = "0.4.22" }
 
-[dev-dependencies]
-ctor = "0.2.8"
-
 [package.metadata.scripts] # cargo install cargo-run-script
 # cargo run-script ...
 watch = "cargo watch -x 'run --bin neo-ms-auth-api'" # cargo install cargo-watch

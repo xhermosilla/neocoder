@@ -4,19 +4,24 @@ use actix_web::{
     web::{self, Bytes},
     App,
 };
-use ctor::ctor;
 
 use neo_ms::AppConfig;
 use neo_ms_auth_api::{auth, config::Configuration, state::AppState};
 
-#[ctor]
-fn setup() {
-    dotenv::dotenv().ok();
-}
-
 /// Get the application state.
 fn get_state() -> AppState {
-    let config: AppConfig<Configuration> = AppConfig::from_env();
+    let config: AppConfig<Configuration> = AppConfig {
+        name: String::from("neo-ms-auth-api"),
+        cfg: Configuration {
+            api_base_url: String::from("/neo/api/v1"),
+            auth_expiration: 86400,
+            auth_issuer: String::from("neo"),
+            auth_secret_key: String::from("secret"),
+            log_level: String::from("INFO"),
+            server_host: String::from("localhost"),
+            server_port: 3010,
+        },
+    };
     AppState::new(config)
 }
 
