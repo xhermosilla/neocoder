@@ -37,12 +37,6 @@ jobs:
       - name: Display directory structure
         run: tree -L 2 packages
 
-      - name: Get all changes between branches
-        run: |
-          base_branch="${{ github.event.pull_request.base.ref }}"
-          git fetch origin $base_branch
-          git diff --name-only origin/$base_branch...HEAD
-
       - name: Determine packages to test
         id: get-packages
         run: |
