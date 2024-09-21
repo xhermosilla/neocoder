@@ -51,8 +51,8 @@ jobs:
           else
             packages=${{ github.event.inputs.package }}
           fi
-          echo "Packages: $packages"
-          echo "packages=$packages" >> $GITHUB_OUTPUT
+          echo "Package list: $packages"
+          echo "packages=\"$packages\"" >> $GITHUB_OUTPUT
 
       - name: Run tests for rust packages
         run: |
