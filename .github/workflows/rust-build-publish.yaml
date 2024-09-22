@@ -47,7 +47,7 @@ jobs:
             packages=${{ github.event.inputs.package }}
           fi
           echo -e ">> Package to deploy: \033[0;36m$packages\033[0m"
-          echo "packages=$packages" >> $GITHUB_ENV
+          echo "packages=$packages" >> $GITHUB_OUTPUT
         
       - name: Build docker images
         id: build-docker-images
