@@ -13,7 +13,7 @@ on:
         required: true
         default: "main"
       package:
-        description: "Rust package to test (leave empty to test all)"
+        description: "Packages to build and publish (empty for all)"
         required: false
         default: ""
 
@@ -48,3 +48,26 @@ jobs:
           fi
           echo -e ">> Package to deploy: \033[0;36m$packages\033[0m"
           echo "packages=$packages" >> $GITHUB_ENV
+        
+      - name: Build docker images
+        id: build-docker-images
+        run: |
+          packages="${{ steps.get-packages.outputs.packages }}"
+
+          if [ ! -z "$packages" ]; then
+            echo "Building docker images for packages: $packages"
+            for package in $packages; do
+              echo -e "\033[0;36m>> Building docker image for package: $package\033[0m"
+              echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
+
+              # Get version from Cargo.toml
+              version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
+
+              # Build the docker image
+              (cd packages/rust/$package && docker build -t neo-ms-auth-api:0.1.0 .)
+            done
+          else
+            echo "No packages to build docker images for"
+          fi
+
+    
