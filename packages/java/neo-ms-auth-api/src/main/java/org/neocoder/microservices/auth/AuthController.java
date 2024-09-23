@@ -34,14 +34,14 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        // Generar el token
+        // Generate the token
         String token = tokenService.generate(username, Collections.singletonList(PASS));
 
-        // Decodificar el token para obtener el tiempo de expiración
+        // Decode the token to get the expiration time
         Claims claims = tokenService.decode(token);
 
         return ResponseEntity.ok(new TokenResponse(
-                claims.getExp(), // Expiración obtenida del token generado
+                claims.getExp(), // Expiration obtained from the generated token
                 token,
                 "Bearer"));
     }
@@ -54,7 +54,7 @@ public class AuthController {
         try {
             String refreshedToken = tokenService.refresh(token);
 
-            // Decodificar el nuevo token para obtener el tiempo de expiración
+            // Decode the new token to get the expiration time
             Claims claims = tokenService.decode(refreshedToken);
 
             return ResponseEntity.ok(new TokenResponse(
@@ -74,7 +74,7 @@ public class AuthController {
         try {
             Claims claims = tokenService.verify(token);
 
-            // Formatear la fecha de expiración (UTC+2)
+            // Format the expiration date
             OffsetDateTime expiration = Instant.ofEpochSecond(claims.getExp()).atOffset(ZoneOffset.ofHours(2));
 
             return ResponseEntity.ok(new ValidateTokenResponse(
@@ -86,7 +86,7 @@ public class AuthController {
         }
     }
 
-    // Método auxiliar para extraer el token del header "Authorization".
+    // Helper method to extract the token from the "Authorization" header.
     private String extractToken(String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
