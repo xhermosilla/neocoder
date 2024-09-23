@@ -1,4 +1,4 @@
-name: (Rust) Deploy to scaleway
+name: (Rust) Deploy
 
 on:
   pull_request:
