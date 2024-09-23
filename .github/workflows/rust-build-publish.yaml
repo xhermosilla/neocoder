@@ -23,7 +23,6 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,7 +54,7 @@ jobs:
           echo -e ">> Package to deploy: \033[0;36m$packages\033[0m"
           echo "packages=$packages" >> $GITHUB_OUTPUT
 
-      - name: Build docker images (temporal)
+      - name: Build docker images
         id: build-docker-images
         run: |
           packages="${{ steps.get-packages.outputs.packages }}"
