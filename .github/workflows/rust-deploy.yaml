@@ -75,10 +75,8 @@ jobs:
 
               echo -e "\033[0;36m>> Deploying docker image: ${IMAGE_NAME}\033[0m"
               echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
-              
-              ssh usuario@${SCW_HOST} << 'EOF'
-                docker pull ${IMAGE_NAME}
-              EOF
+
+              ssh usuario@${SCW_HOST} "docker pull ${IMAGE_NAME}"
 
             done
           else
