@@ -54,27 +54,6 @@ jobs:
           fi
           echo -e ">> Package to deploy: \033[0;36m$packages\033[0m"
           echo "packages=$packages" >> $GITHUB_OUTPUT
-        
-      # - name: Build docker images
-      #   id: build-docker-images
-      #   run: |
-      #     packages="${{ steps.get-packages.outputs.packages }}"
-
-      #     if [ ! -z "$packages" ]; then
-      #       echo "Building docker images for packages: $packages"
-      #       for package in $packages; do
-      #         echo -e "\033[0;36m>> Building docker image for package: $package\033[0m"
-      #         echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
-
-      #         # Get version from Cargo.toml
-      #         version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
-
-      #         # Build the docker image
-      #         (cd packages/rust/$package && docker build -t $package:$version .)
-      #       done
-      #     else
-      #       echo "No packages to build docker images for"
-      #     fi
 
       - name: Build docker images (temporal)
         id: build-docker-images
@@ -90,10 +69,9 @@ jobs:
               # Get version from Cargo.toml
               version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
 
-              IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}-test
+              IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}
 
-              docker pull hello-world:latest
-              docker tag hello-world:latest $package:$version
+              (cd packages/rust/$package && docker build -t $package:$version .)
               docker tag $package:$version $IMAGE_NAME
             done
           else
@@ -110,7 +88,7 @@ jobs:
             for package in $packages; do
 
               version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
-              IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}-test
+              IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}
 
               echo -e "\033[0;36m>> Pushing docker image: ${IMAGE_NAME}\033[0m"
               echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
