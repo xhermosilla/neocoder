@@ -1,0 +1,71 @@
+name: (Rust) Deploy
+
+on:
+  pull_request:
+    types:
+      - closed  # Execute only when the PR is closed
+    branches:
+      - main    # Only for the main branch
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch from which to deploy"
+        required: true
+        default: "main"
+      package:
+        description: "Packages to deploy (empty for all)"
+        required: false
+        default: ""
+
+jobs:
+  deploy:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
+
+      - name: Display directory structure
+        run: tree -L 2 packages
+
+      - name: Determine packages to deploy
+        id: get-packages
+        run: |
+          # Get all packages that have been modified
+          if [ "${{ github.event.inputs.package }}" == "" ]; then
+            echo "Determining packages to deploy"
+
+            # Packages with Dockerfile in them
+            packages=$(find packages/rust -name Dockerfile | grep '^packages/rust/' | cut -d'/' -f3 | sort -u | tr '\n' ' ')
+          else
+            packages=${{ github.event.inputs.package }}
+          fi
+          echo -e ">> Package to deploy: \033[0;36m$packages\033[0m"
+          echo "packages=$packages" >> $GITHUB_OUTPUT
+
+      - name: Deploy
+        id: deploy-packages
+        run: |
+          packages="${{ steps.get-packages.outputs.packages }}"
+
+          if [ ! -z "$packages" ]; then
+            echo "Deploying packages: $packages"
+            for package in $packages; do
+
+              # Get version from Cargo.toml
+              version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
+              IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}
+
+              echo -e "\033[0;36m>> Deploying docker image: ${IMAGE_NAME}\033[0m"
+              echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
+              echo "DONE"
+
+            done
+          else
+            echo "No packages to deploy"
+          fi
