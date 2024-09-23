@@ -50,6 +50,9 @@ jobs:
 
       - name: Deploy
         id: deploy-packages
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SCW_SSH_PRIVATE_KEY }}
+          HOST: ${{ secrets.SCW_PUBLIC_DNS }}
         run: |
           packages="${{ steps.get-packages.outputs.packages }}"
 
@@ -63,7 +66,10 @@ jobs:
 
               echo -e "\033[0;36m>> Deploying docker image: ${IMAGE_NAME}\033[0m"
               echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
-              echo "DONE"
+              
+              ssh ssh root@${HOST} << 'EOF'
+                docker pull ${IMAGE_NAME}
+              EOF
 
             done
           else
