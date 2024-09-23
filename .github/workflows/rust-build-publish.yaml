@@ -90,8 +90,7 @@ jobs:
               # Get version from Cargo.toml
               version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
 
-              # Build the docker image
-              IMAGE_NAME=ghcr.io/xhermosilla/$package:$version
+              IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}-test
 
               docker pull hello-world:latest
               docker tag hello-world:latest $package:$version
