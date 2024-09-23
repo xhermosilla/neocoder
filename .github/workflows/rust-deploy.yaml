@@ -51,7 +51,7 @@ jobs:
       - name: Setup SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SCW_SSH_PRIVATE_KEY }}
-          SCW_HOST: ${{ env.SCW_PUBLIC_DNS }}
+          SCW_HOST: ${{ vars.SCW_PUBLIC_DNS }}
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
@@ -61,7 +61,7 @@ jobs:
       - name: Deploy
         id: deploy-packages
         env:
-          SCW_HOST: ${{ env.SCW_PUBLIC_DNS }}
+          SCW_HOST: ${{ vars.SCW_PUBLIC_DNS }}
         run: |
           packages="${{ steps.get-packages.outputs.packages }}"
 
