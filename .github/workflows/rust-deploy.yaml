@@ -59,27 +59,29 @@ jobs:
           cat ~/.ssh/id_ed25519
           ssh-keyscan -H ${SCW_HOST} >> ~/.ssh/known_hosts
 
-      - name: Deploy
-        id: deploy-packages
-        env:
-          SCW_HOST: ${{ vars.SCW_PUBLIC_DNS }}
-        run: |
-          packages="${{ steps.get-packages.outputs.packages }}"
+          ssh -v root@${SCW_HOST} "docker pull ${IMAGE_NAME}"
 
-          if [ ! -z "$packages" ]; then
-            echo "Deploying packages: $packages"
-            for package in $packages; do
+      # - name: Deploy
+      #   id: deploy-packages
+      #   env:
+      #     SCW_HOST: ${{ vars.SCW_PUBLIC_DNS }}
+      #   run: |
+      #     packages="${{ steps.get-packages.outputs.packages }}"
 
-              # Get version from Cargo.toml
-              version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
-              IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}
+      #     if [ ! -z "$packages" ]; then
+      #       echo "Deploying packages: $packages"
+      #       for package in $packages; do
 
-              echo -e "\033[0;36m>> Deploying docker image: ${IMAGE_NAME}\033[0m"
-              echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
+      #         # Get version from Cargo.toml
+      #         version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
+      #         IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}
 
-              ssh root@${SCW_HOST} "docker pull ${IMAGE_NAME}"
+      #         echo -e "\033[0;36m>> Deploying docker image: ${IMAGE_NAME}\033[0m"
+      #         echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
 
-            done
-          else
-            echo "No packages to deploy"
-          fi
+      #         ssh root@${SCW_HOST} "docker pull ${IMAGE_NAME}"
+
+      #       done
+      #     else
+      #       echo "No packages to deploy"
+      #     fi
