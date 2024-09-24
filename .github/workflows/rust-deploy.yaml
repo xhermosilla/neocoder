@@ -74,7 +74,7 @@ jobs:
             for package in $packages; do
                 if [ -f "packages/rust/$package/.env.enc" ]; then
                   echo -e "\033[0;36m>> Decrypting .env.enc for package: $package\033[0m"
-                  sops -d packages/rust/$package/.env.enc > packages/rust/$package/.env
+                  sops -d --input-type dotenv --output-type dotenv packages/rust/$package/.env.enc > packages/rust/$package/.env
                 else
                   echo -e "\033[0;36m>> No .env.enc file for package: $package\033[0m"
                 fi
