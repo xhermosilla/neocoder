@@ -20,8 +20,8 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest credentials) {
-        String username = credentials.getUsername();
-        String password = credentials.getPassword();
+        String username = credentials.username();
+        String password = credentials.password();
 
         if (!DEFAULT_USER.equals(username) || !DEFAULT_PASSWORD.equals(password)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
