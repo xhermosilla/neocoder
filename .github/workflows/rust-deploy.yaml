@@ -87,6 +87,7 @@ jobs:
           for package in $packages; do
             if [ -f "packages/rust/$package/.env" ]; then
               echo -e "\033[0;36m>> Copying .env file for package: $package\033[0m"
+              ssh root@${SCW_HOST} "mkdir -p /opt/configuration/$package"
               scp packages/rust/$package/.env root@${SCW_HOST}:/opt/configuration/$package/.env
             else
               echo -e "\033[0;36m>> No .env file for package: $package\033[0m"
