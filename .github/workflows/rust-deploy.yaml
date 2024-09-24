@@ -64,6 +64,25 @@ jobs:
           echo -e ">> Package to deploy: \033[0;36m$packages\033[0m"
           echo "packages=$packages" >> $GITHUB_OUTPUT
 
+      - name: Decrypt environment variables
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+        run: |
+          packages="${{ steps.get-packages.outputs.packages }}"
+          if [ ! -z "$packages" ]; then
+            echo "Decript environment variables for packages: $packages"
+            for package in $packages; do
+                if [ -f "packages/rust/$package/.env.enc" ]; then
+                  echo -e "\033[0;36m>> Decrypting .env.enc for package: $package\033[0m"
+                  sops -d packages/rust/$package/.env.enc > packages/rust/$package/.env
+                else
+                  echo -e "\033[0;36m>> No .env.enc file for package: $package\033[0m"
+                fi
+            done
+          else
+            echo "No packages decrypt environment variables"
+          fi
+
       # - name: Update deployment configuration
       #   id: deploy-packages
       #   env:
