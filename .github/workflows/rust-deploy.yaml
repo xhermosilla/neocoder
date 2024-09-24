@@ -3,9 +3,9 @@ name: (Rust) Deploy
 on:
   pull_request:
     types:
-      - closed  # Execute only when the PR is closed
+      - closed # Execute only when the PR is closed
     branches:
-      - main    # Only for the main branch
+      - main # Only for the main branch
   workflow_dispatch:
     inputs:
       branch:
@@ -52,11 +52,8 @@ jobs:
       - name: Determine packages to deploy
         id: get-packages
         run: |
-          # Get all packages that have been modified
           if [ "${{ github.event.inputs.package }}" == "" ]; then
             echo "Determining packages to deploy"
-
-            # Packages with Dockerfile in them
             packages=$(find packages/rust -name Dockerfile | grep '^packages/rust/' | cut -d'/' -f3 | sort -u | tr '\n' ' ')
           else
             packages=${{ github.event.inputs.package }}
@@ -65,23 +62,36 @@ jobs:
           echo "packages=$packages" >> $GITHUB_OUTPUT
 
       - name: Decrypt environment variables
+        if: ${{ steps.get-packages.outputs.packages != '' }}
         env:
           SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
         run: |
           packages="${{ steps.get-packages.outputs.packages }}"
-          if [ ! -z "$packages" ]; then
-            echo "Decript environment variables for packages: $packages"
-            for package in $packages; do
-                if [ -f "packages/rust/$package/.env.enc" ]; then
+          echo "Decript environment variables for packages: $packages"
+          for package in $packages; do
+              if [ -f "packages/rust/$package/.env.enc" ]; then
                   echo -e "\033[0;36m>> Decrypting .env.enc for package: $package\033[0m"
                   sops -d --input-type dotenv --output-type dotenv packages/rust/$package/.env.enc > packages/rust/$package/.env
-                else
+              else
                   echo -e "\033[0;36m>> No .env.enc file for package: $package\033[0m"
-                fi
-            done
-          else
-            echo "No packages decrypt environment variables"
-          fi
+              fi
+          done
+
+      - name: Copying environment files to server
+        if: ${{ steps.get-packages.outputs.packages != '' }}
+        env:
+          SCW_HOST: ${{ vars.SCW_PUBLIC_DNS }}
+        run: |
+          packages="${{ steps.get-packages.outputs.packages }}"
+          echo "Copying environment files to server for packages: $packages"
+          for package in $packages; do
+            if [ -f "packages/rust/$package/.env" ]; then
+              echo -e "\033[0;36m>> Copying .env file for package: $package\033[0m"
+              scp packages/rust/$package/.env root@${SCW_HOST}:/opt/configuration/$package/.env
+            else
+              echo -e "\033[0;36m>> No .env file for package: $package\033[0m"
+            fi
+          done
 
       # - name: Update deployment configuration
       #   id: deploy-packages
