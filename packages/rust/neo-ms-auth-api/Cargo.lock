@@ -887,7 +887,7 @@ dependencies = [
 [[package]]
 name = "neo-auth-service"
 version = "0.1.0"
-source = "git+https://github.com/xhermosilla/neocoder?branch=feat/rust-auth-microservice#21#914865ec7858abab07a7fb19a36df09a938f84a7"
+source = "git+https://github.com/xhermosilla/neocoder?branch=feat/rust-auth-microservice#21#e72ec44214834ec94db3b5b928fb2a0fc039fbf2"
 dependencies = [
  "chrono",
  "jsonwebtoken",
@@ -897,7 +897,7 @@ dependencies = [
 [[package]]
 name = "neo-ms"
 version = "0.1.0"
-source = "git+https://github.com/xhermosilla/neocoder?branch=feat/rust-auth-microservice#21#914865ec7858abab07a7fb19a36df09a938f84a7"
+source = "git+https://github.com/xhermosilla/neocoder?branch=feat/rust-auth-microservice#21#e72ec44214834ec94db3b5b928fb2a0fc039fbf2"
 dependencies = [
  "actix-files",
  "actix-web",

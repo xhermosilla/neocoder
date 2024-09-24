@@ -1,0 +1,100 @@
+name: (Rust) Build and Publish
+
+on:
+  pull_request:
+    types:
+      - closed  # Execute only when the PR is closed
+    branches:
+      - main    # Only for the main branch
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch from which to deploy"
+        required: true
+        default: "main"
+      package:
+        description: "Packages to build and publish (empty for all)"
+        required: false
+        default: ""
+
+jobs:
+  build-and-publish:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Display directory structure
+        run: tree -L 2 packages
+
+      - name: Determine packages to build docker images for
+        id: get-packages
+        run: |
+          # Get all packages that have been modified
+          if [ "${{ github.event.inputs.package }}" == "" ]; then
+            echo "Determining packages to build docker images for"
+
+            # Packages with Dockerfile in them
+            packages=$(find packages/rust -name Dockerfile | grep '^packages/rust/' | cut -d'/' -f3 | sort -u | tr '\n' ' ')
+          else
+            packages=${{ github.event.inputs.package }}
+          fi
+          echo -e ">> Package to deploy: \033[0;36m$packages\033[0m"
+          echo "packages=$packages" >> $GITHUB_OUTPUT
+
+      - name: Build docker images
+        id: build-docker-images
+        run: |
+          packages="${{ steps.get-packages.outputs.packages }}"
+
+          if [ ! -z "$packages" ]; then
+            echo "Building docker images for packages: $packages"
+            for package in $packages; do
+              echo -e "\033[0;36m>> Building docker image for package: $package\033[0m"
+              echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
+
+              # Get version from Cargo.toml
+              version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
+
+              IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}
+
+              (cd packages/rust/$package && docker build -t $package:$version .)
+              docker tag $package:$version $IMAGE_NAME
+            done
+          else
+            echo "No packages to build docker images for"
+          fi
+
+      - name: Push docker images
+        id: push-docker-images
+        run: |
+          packages="${{ steps.get-packages.outputs.packages }}"
+
+          if [ ! -z "$packages" ]; then
+            echo "Pushing docker images for packages: $packages"
+            for package in $packages; do
+
+              version=$(grep '^version' packages/rust/$package/Cargo.toml | cut -d '"' -f 2)
+              IMAGE_NAME=ghcr.io/xhermosilla/${package}:${version}
+
+              echo -e "\033[0;36m>> Pushing docker image: ${IMAGE_NAME}\033[0m"
+              echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
+              
+              # Push the Docker image
+              docker push $IMAGE_NAME
+            done
+          else
+            echo "No packages to push docker images for"
+          fi
