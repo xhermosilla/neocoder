@@ -10,10 +10,12 @@ sourceCompatibility = '17'
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io'}
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.github.davidmendez9:neo-auth-service:1.0.0'
 
 	// Dev dependencies
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

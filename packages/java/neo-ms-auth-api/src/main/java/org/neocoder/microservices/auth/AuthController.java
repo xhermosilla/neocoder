@@ -1,6 +1,7 @@
 package org.neocoder.microservices.auth;
 
 import org.neocoder.microservices.auth.model.*;
+import org.neocoder.services.auth.TokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,8 @@ public class AuthController {
 
     private static final String DEFAULT_USER = "admin";
     private static final String DEFAULT_PASSWORD = "admin";
+    private static final int DEFAULT_EXPTIME = 3600;
+    TokenService tkn = new TokenService(DEFAULT_PASSWORD, DEFAULT_USER, DEFAULT_EXPTIME);
 
     /**
      * Login endpoint.
@@ -27,7 +30,9 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        return ResponseEntity.ok(new TokenResponse(3800, "token", "Bearer"));
+        String token = tkn.generate(username, null);
+
+        return ResponseEntity.ok(new TokenResponse(DEFAULT_EXPTIME, token, "Bearer"));
     }
 
     /**
