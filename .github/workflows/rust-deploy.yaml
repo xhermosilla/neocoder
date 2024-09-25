@@ -23,6 +23,7 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -54,6 +55,7 @@ jobs:
         run: |
           if [ "${{ github.event.inputs.package }}" == "" ]; then
             echo "Determining packages to deploy"
+
             packages=$(find packages/rust -name Dockerfile | grep '^packages/rust/' | cut -d'/' -f3 | sort -u | tr '\n' ' ')
           else
             packages=${{ github.event.inputs.package }}
