@@ -1,9 +1,6 @@
 name: (Rust) Unit tests
 
 on:
-  push:
-    paths:
-      - "packages/rust/**"
   pull_request:
     paths:
       - "packages/rust/**"
@@ -19,7 +16,6 @@ on:
         default: ""
 
 jobs:
-
   unit-tests:
     name: Run unit tests
     runs-on: ubuntu-latest
@@ -35,7 +31,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
           ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
 
       - name: Display directory structure
@@ -44,23 +40,35 @@ jobs:
       - name: Determine packages to test
         id: get-packages
         run: |
-          # Get all Rust packages if no specific package is specified
+          # Get all packages that have been modified
           if [ "${{ github.event.inputs.package }}" == "" ]; then
-            echo "All packages will be tested."
-            packages=$(ls packages/rust)
+            echo "Determining packages to test based on changes."
+            base_branch="${{ github.event.pull_request.base.ref }}"
+
+            git fetch origin $base_branch
+            git diff --name-only origin/$base_branch...HEAD
+
+            packages=$(git diff --name-only origin/$base_branch...HEAD | grep '^packages/rust/' | cut -d'/' -f3 | sort -u | tr '\n' ' ')
           else
             packages=${{ github.event.inputs.package }}
           fi
-          echo "Packages: $packages"
+          echo -e ">> Package list: \033[0;36m$packages\033[0m"
           echo "packages=$packages" >> $GITHUB_OUTPUT
 
       - name: Run tests for rust packages
         run: |
           packages="${{ steps.get-packages.outputs.packages }}"
-          echo "Packages to test: $packages"
 
-          # Convert JSON array string into a bash array using jq
-          for package in $packages; do
-            echo "Running tests for package: $package"
-            (cd packages/rust/$package && cargo test --verbose)
-          done
+          if [ ! -z "$packages" ]; then
+
+            echo "Packages to test: $packages"
+
+            for package in $packages; do
+              echo -e "\033[0;36m>> Running tests for package: $package\033[0m"
+              echo -e "\033[0;36m-------------------------------------------------------------------------------\033[0m"
+              (cd packages/rust/$package && cargo test --quiet)
+            done
+            
+          else
+            echo "No packages to test."
+          fi

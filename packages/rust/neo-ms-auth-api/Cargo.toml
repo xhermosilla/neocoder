@@ -1,0 +1,24 @@
+[package]
+name = "neo-ms-auth-api"
+version = "0.2.0"
+edition = "2021"
+
+[[bin]]
+name = "neo-ms-auth-api"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "4"
+neo-auth-service  = { git = "https://github.com/xhermosilla/neocoder", branch = "feat/rust-auth-microservice#21" }
+neo-ms = { git = "https://github.com/xhermosilla/neocoder", branch = "feat/rust-auth-microservice#21" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+dotenv = "0.15.0"
+chrono = "0.4.38"
+structured-logger = "1.0.3"
+log = { version = "0.4.22" }
+
+[package.metadata.scripts] # cargo install cargo-run-script
+# cargo run-script ...
+watch = "cargo watch -x 'run --bin neo-ms-auth-api'" # cargo install cargo-watch
