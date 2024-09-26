@@ -1,9 +1,11 @@
 package org.neocoder.microservices.auth;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.neocoder.microservices.auth.model.*;
 import org.neocoder.services.auth.TokenService;
+import org.neocoder.services.auth.exception.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final TokenService tokenService;
+    private static final String TOKEN_TYPE = "Bearer";
+    Logger logger = Logger.getLogger(getClass().getName());
 
     @Value("${auth.token.expiration}")
     private int expiration;
@@ -51,7 +55,7 @@ public class AuthController {
         }
 
         String token = tokenService.generate(username, List.of("admin"));
-        return ResponseEntity.ok(new TokenResponse(expiration, token, "Bearer"));
+        return ResponseEntity.ok(new TokenResponse(expiration, token, TOKEN_TYPE));
     }
 
     /**
@@ -62,7 +66,19 @@ public class AuthController {
      */
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refresh(@RequestHeader("Authorization") String authHeader) {
-        return ResponseEntity.ok(new TokenResponse(3800, "token", "Bearer"));
+        try {
+            String token = authHeader.replace("Bearer ", "");
+
+            String refreshedToken = tokenService.refresh(token);
+
+            logger.info("Token refreshed");
+
+            return ResponseEntity.ok(new TokenResponse(expiration, refreshedToken, TOKEN_TYPE));
+
+        } catch (InvalidTokenException e) {
+            logger.warning("Invalid Token: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 
     /**
