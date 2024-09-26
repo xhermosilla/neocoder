@@ -8,6 +8,9 @@
         },
         {
             "path": "../neo-ms-auth-api"
+        },
+        {
+            "path": "../neo-dao-service"
         }
     ],
     "settings": {}
