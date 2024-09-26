@@ -6,11 +6,16 @@ plugins {
 
 group = 'org.neocoder'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
 
 repositories {
 	mavenCentral()
 	maven { url 'https://jitpack.io'}
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
 }
 
 dependencies {

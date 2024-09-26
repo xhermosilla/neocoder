@@ -1,5 +1,7 @@
 package org.neocoder.microservices.auth;
 
+import java.util.List;
+
 import org.neocoder.microservices.auth.model.*;
 import org.neocoder.services.auth.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +50,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        String token = tokenService.generate(username, null);
+        String token = tokenService.generate(username, List.of("admin"));
         return ResponseEntity.ok(new TokenResponse(expiration, token, "Bearer"));
     }
 
