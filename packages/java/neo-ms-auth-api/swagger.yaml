@@ -7,7 +7,7 @@ info:
     name: Development Team
     url: https://github.com/xhermosilla/neocoder
 servers:
-  - url: http://localhost:3010
+  - url: http://localhost:3010/neo/api/v1
     description: Local authentication server
 
 paths:
@@ -94,7 +94,7 @@ paths:
           description: Token expired or invalid.
 
   /auth/validate:
-    get:
+    post:
       summary: Validate JWT token
       description: Check if the JWT token is valid.
       tags:

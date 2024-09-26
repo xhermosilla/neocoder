@@ -1,6 +1,11 @@
 package org.neocoder.microservices.auth;
 
+import java.util.List;
+
 import org.neocoder.microservices.auth.model.*;
+import org.neocoder.services.auth.TokenService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,8 +14,26 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private static final String DEFAULT_USER = "admin";
-    private static final String DEFAULT_PASSWORD = "admin";
+    private final TokenService tokenService;
+
+    @Value("${auth.token.expiration}")
+    private int expiration;
+
+    @Value("${auth.login.defaultUser}")
+    private String defaultUser;
+
+    @Value("${auth.login.defaultPassword}")
+    private String defaultPassword;
+
+    /**
+     * Constructor.
+     *
+     * @param tokenService TokenService object
+     */
+    @Autowired
+    public AuthController(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 
     /**
      * Login endpoint.
@@ -23,11 +46,12 @@ public class AuthController {
         String username = credentials.username();
         String password = credentials.password();
 
-        if (!DEFAULT_USER.equals(username) || !DEFAULT_PASSWORD.equals(password)) {
+        if (!defaultUser.equals(username) || !defaultPassword.equals(password)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        return ResponseEntity.ok(new TokenResponse(3800, "token", "Bearer"));
+        String token = tokenService.generate(username, List.of("admin"));
+        return ResponseEntity.ok(new TokenResponse(expiration, token, "Bearer"));
     }
 
     /**

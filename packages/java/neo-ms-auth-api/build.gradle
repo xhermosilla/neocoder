@@ -6,14 +6,21 @@ plugins {
 
 group = 'org.neocoder'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io'}
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.github.davidmendez9:neo-auth-service:1.0.0'
 
 	// Dev dependencies
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
