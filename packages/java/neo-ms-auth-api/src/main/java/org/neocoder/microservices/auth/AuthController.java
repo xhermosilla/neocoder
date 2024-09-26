@@ -1,9 +1,14 @@
 package org.neocoder.microservices.auth;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.neocoder.microservices.auth.model.*;
+import org.neocoder.services.auth.Claims;
 import org.neocoder.services.auth.TokenService;
+import org.neocoder.services.auth.exception.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -73,7 +78,22 @@ public class AuthController {
      */
     @PostMapping("/validate")
     public ResponseEntity<ValidateTokenResponse> validate(@RequestHeader("Authorization") String authHeader) {
-        return ResponseEntity.ok(new ValidateTokenResponse(3800, "3800", true));
+
+        String token = authHeader.replace("Bearer ", "");
+
+        try {
+            Claims claims = tokenService.verify(token);
+
+            Instant expirationInstant = Instant.ofEpochSecond(claims.getExp());
+            String formattedExpTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    .withZone(ZoneId.of("UTC+2"))
+                    .format(expirationInstant);
+
+            return ResponseEntity.ok(new ValidateTokenResponse(claims.getExp(), formattedExpTime, true));
+
+        } catch (InvalidTokenException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ValidateTokenResponse(0, null, false));
+        }
     }
 
 }

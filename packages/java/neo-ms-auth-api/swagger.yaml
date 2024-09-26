@@ -109,6 +109,14 @@ paths:
               schema:
                 type: object
                 properties:
+                  expires:
+                    type: long
+                    description: Expiration time for the token in unix time
+                    example: 1813776659
+                  expires_formatted:
+                    type: String
+                    description: Expiration time formatted
+                    example: "2027-06-23 20:50:59"
                   valid:
                     type: boolean
                     description: Indicates whether the token is valid.
