@@ -15,8 +15,8 @@ The API definition is available in the `swagger.yaml` file located in the root o
 To download the project, clone the repository from GitHub:
 
 ```bash
-git clone https://github.com/xhermosilla/neocoder.gitp
-cd neocoder/packages/rust/neo-ms-auth-api
+git clone https://github.com/xhermosilla/neocoder.git
+cd neocoder/packages/java/neo-ms-auth-api
 ```
 
 ## Usage
