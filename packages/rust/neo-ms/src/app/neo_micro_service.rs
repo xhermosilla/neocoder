@@ -1,3 +1,4 @@
+use actix_cors::Cors;
 use actix_files as fs;
 use std::sync::Arc;
 
@@ -28,6 +29,7 @@ impl NeoMicroService {
         let server = HttpServer::new(move || {
             App::new()
                 .wrap(RequestStateMiddleware)
+                .wrap(Cors::permissive())
                 .wrap(Logger::default())
                 .app_data(web::JsonConfig::default().error_handler(error_handler))
                 .app_data(web::Data::new(state.clone()))
