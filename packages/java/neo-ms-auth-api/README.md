@@ -29,7 +29,7 @@ Make sure you have Java installed.
 
 ### Configuration
 
-The service requires some basic configurations, such as the secret key for tokens and other environment parameters. You can set these configurations on the `applications.properties` file located at the src/main/resources folder:
+The service requires some basic configurations, such as the secret key for tokens and other environment parameters. You can set these configurations on the `application.properties` file located at the src/main/resources folder:
 
 - #### Auth service configuration
 auth.token.secretKey= -
@@ -71,7 +71,7 @@ To start the service in development mode, you can use the following command:
 ./gradlew bootRun
 ```
 
-This command will start the API server, and it will listen for incoming requests. The service load the configurations from the `applications.properties` file. 
+This command will start the API server, and it will listen for incoming requests. The service load the configurations from the `application.properties` file. 
 
 You can access the API at `http://localhost:3010`.
 
