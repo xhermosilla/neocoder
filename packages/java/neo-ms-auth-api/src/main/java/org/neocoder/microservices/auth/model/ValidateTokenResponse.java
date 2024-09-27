@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param valid            Token validity
  */
 public record ValidateTokenResponse(
-                @JsonProperty("expires") int expires,
-                @JsonProperty("expires_formatted") String expiresFormatted,
-                @JsonProperty("valid") boolean valid) {
+        @JsonProperty("expires") long expires,
+        @JsonProperty("expires_formatted") String expiresFormatted,
+        @JsonProperty("valid") boolean valid) {
 }
