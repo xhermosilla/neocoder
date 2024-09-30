@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
 @RestController
 @RequestMapping("/auth")
@@ -50,12 +51,13 @@ public class AuthController {
      * @return TokenResponse object
      */
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest credentials) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest credentials) {
         String username = credentials.username();
         String password = credentials.password();
 
         if (!defaultUser.equals(username) || !defaultPassword.equals(password)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), "Unauthorized", "Invalid Credentials"));
         }
 
         String token = tokenService.generate(username, List.of("admin"));
