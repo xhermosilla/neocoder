@@ -33,7 +33,7 @@ class AuthControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        authController.expiration = 3600; // Puedes ajustar este valor según tu configuración
+        authController.expiration = 3600;
         authController.defaultUser = "defaultUser";
         authController.defaultPassword = "defaultPassword";
     }
