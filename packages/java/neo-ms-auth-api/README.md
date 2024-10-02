@@ -32,18 +32,18 @@ Make sure you have Java installed.
 The service requires some basic configurations, such as the secret key for tokens and other environment parameters. You can set these settings on the `application.properties` file located at the src/main/resources folder:
 
 - #### Auth service configuration
-auth.token.secretKey= -
-auth.token.issuer=neo
-auth.token.expiration=86400000
+auth.token.secretKey=-  
+auth.token.issuer=neo  
+auth.token.expiration=86400000  
 
 - #### Login configuration
-auth.login.defaultUser=admin
-auth.login.defaultPassword=admin
+auth.login.defaultUser=admin  
+auth.login.defaultPassword=admin  
 
 - #### Server configuration
-server.port=3010
-server.servlet.context-path=/neo/api/v1
-spring.application.name=neo-ms-auth-api
+server.port=3010  
+server.servlet.context-path=/neo/api/v1  
+spring.application.name=neo-ms-auth-api  
 
 (The variables that not have a default value are required to be set)
 
@@ -77,12 +77,20 @@ You can access the API at `http://localhost:3010`.
 
 ### Testing the Rest Api service
 
-Test will be available soon.
+To run the test, open a terminal in the root of the service folder and execute the following command:
 
+```bash
+    ./gradlew test
+```
 ### Running coverage
 
-Coverage will be available soon.
+You need to have gradle on your project and Jacoco on your dependencies.
 
+
+To run the coverage, open a terminal in the root of the service folder and execute the following command: 
+```bash
+    ./gradlew jacocoTestReport
+```
 ## Contributing
 
 Contributions are welcome! Feel free to submit a pull request or open an issue on GitHub.
