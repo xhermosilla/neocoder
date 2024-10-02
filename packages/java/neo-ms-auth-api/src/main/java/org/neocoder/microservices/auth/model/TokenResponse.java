@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param tokenType Token type
  */
 public record TokenResponse(
-                @JsonProperty("expires") int expires,
-                @JsonProperty("token") String token,
-                @JsonProperty("token_type") String tokenType) {
+        @JsonProperty("expires") int expires,
+        @JsonProperty("token") String token,
+        @JsonProperty("token_type") String tokenType) {
 }

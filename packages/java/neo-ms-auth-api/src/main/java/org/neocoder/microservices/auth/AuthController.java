@@ -1,20 +1,17 @@
 package org.neocoder.microservices.auth;
 
-import java.time.Instant;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.neocoder.microservices.auth.model.*;
-import org.neocoder.services.auth.Claims;
-import org.neocoder.services.auth.TokenService;
+import org.neocoder.services.auth.*;
 import org.neocoder.services.auth.exception.InvalidTokenException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/auth")
@@ -55,7 +52,8 @@ public class AuthController {
         String password = credentials.password();
 
         if (!defaultUser.equals(username) || !defaultPassword.equals(password)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "Invalid Credentials");
         }
 
         String token = tokenService.generate(username, List.of("admin"));
