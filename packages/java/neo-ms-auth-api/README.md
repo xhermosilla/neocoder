@@ -1,6 +1,6 @@
 # Neo Microservice Auth Api
 
-`neo-ms-auth-api` is a RESTful service developed in Java that provides JWT-based authentication functionalities. This service acts as an API for managing user authentication, leveraging the neo-auth-service crate to handle tokens and secure authentication.
+`neo-ms-auth-api` is a RESTful service developed in Java that provides JWT-based authentication functionalities. This service acts as an API for managing user authentication, leveraging the `neo-auth-service` library to handle tokens and ensure secure authentication.
 
 ## Features
 
@@ -29,7 +29,7 @@ Make sure you have Java installed.
 
 ### Configuration
 
-The service requires some basic configurations, such as the secret key for tokens and other environment parameters. You can set these configurations on the `application.properties` file located at the src/main/resources folder:
+The service requires some basic configurations, such as the secret key for tokens and other environment parameters. You can set these settings on the `application.properties` file located at the src/main/resources folder:
 
 - #### Auth service configuration
 auth.token.secretKey= -
