@@ -24,7 +24,6 @@ content-type: application/json
 ###
 
 @token = {{login.response.body.$.token}}
-
 ### REFRESH
 
 POST {{baseUrl}}/auth/refresh HTTP/1.1
