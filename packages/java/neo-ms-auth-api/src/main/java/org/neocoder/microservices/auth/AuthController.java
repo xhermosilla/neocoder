@@ -25,13 +25,13 @@ public class AuthController {
     Logger logger = Logger.getLogger(getClass().getName());
 
     @Value("${auth.token.expiration}")
-    public int expiration;
+    private int expiration;
 
     @Value("${auth.login.defaultUser}")
-    public String defaultUser;
+    private String defaultUser;
 
     @Value("${auth.login.defaultPassword}")
-    public String defaultPassword;
+    private String defaultPassword;
 
     /**
      * Constructor.

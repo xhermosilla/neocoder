@@ -4,45 +4,48 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.neocoder.microservices.auth.NeoAuthApplication;
 import org.neocoder.microservices.auth.model.LoginRequest;
 import org.neocoder.microservices.auth.model.TokenResponse;
 import org.neocoder.microservices.auth.model.ValidateTokenResponse;
 import org.neocoder.services.auth.Claims;
 import org.neocoder.services.auth.TokenService;
 import org.neocoder.services.auth.exception.InvalidTokenException;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.neocoder.microservices.auth.AuthController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.logging.Logger;
+
+@TestPropertySource(properties = {
+        "auth.token.expiration=3600",
+        "auth.login.defaultUser=testUser",
+        "auth.login.defaultPassword=testPassword"
+})
+@SpringBootTest(classes = NeoAuthApplication.class)
 
 class AuthControllerTest {
 
-    @Mock
+    @MockBean
     private TokenService tokenService;
 
-    @InjectMocks
+    @Autowired
     private AuthController authController;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        authController.expiration = 3600;
-        authController.defaultUser = "defaultUser";
-        authController.defaultPassword = "defaultPassword";
-    }
-
     @Test
-    void testLogin_Success() {
-        LoginRequest request = new LoginRequest("defaultUser", "defaultPassword");
+    void testLoginSuccess() {
+
+        LoginRequest request = new LoginRequest("testUser", "testPassword");
         String generatedToken = "mockedToken";
-        when(tokenService.generate(eq("defaultUser"), eq(List.of("admin")))).thenReturn(generatedToken);
+        when(tokenService.generate(eq("testUser"), eq(List.of("admin")))).thenReturn(generatedToken);
 
         ResponseEntity<TokenResponse> response = authController.login(request);
 
@@ -53,7 +56,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void testLogin_Unauthorized() {
+    void testLoginUnauthorized() {
         LoginRequest request = new LoginRequest("wrongUser", "wrongPassword");
 
         ResponseEntity<TokenResponse> response = authController.login(request);
@@ -63,7 +66,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void testRefresh_Success() throws InvalidTokenException {
+    void testRefreshSuccess() throws InvalidTokenException {
         String oldToken = "oldToken";
         String newToken = "newToken";
         when(tokenService.refresh(oldToken)).thenReturn(newToken);
@@ -76,7 +79,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void testRefresh_InvalidToken() throws InvalidTokenException {
+    void testRefreshInvalidToken() throws InvalidTokenException {
         String invalidToken = "invalidToken";
         when(tokenService.refresh(invalidToken)).thenThrow(new InvalidTokenException("Invalid token"));
 
@@ -87,7 +90,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void testValidate_Success() throws InvalidTokenException {
+    void testValidateSuccess() throws InvalidTokenException {
         String token = "validToken";
         Claims claims = mock(Claims.class);
         long expirationTime = Instant.now().getEpochSecond() + 3600;
@@ -109,10 +112,8 @@ class AuthControllerTest {
         assertTrue(responseBody.valid());
     }
 
-
-
     @Test
-    void testValidate_InvalidToken() throws InvalidTokenException {
+    void testValidateInvalidToken() throws InvalidTokenException {
         String invalidToken = "invalidToken";
         when(tokenService.verify(invalidToken)).thenThrow(new InvalidTokenException("Invalid token"));
 
@@ -123,5 +124,4 @@ class AuthControllerTest {
 
         assertFalse(response.getBody().valid());
     }
-
 }
