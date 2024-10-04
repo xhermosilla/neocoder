@@ -2,6 +2,15 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'jacoco'
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		html.required = true
+	}
 }
 
 group = 'org.neocoder'
@@ -27,6 +36,12 @@ dependencies {
 
 	// Test dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mockito:mockito-core:3.+'
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
 }
 
 tasks.withType(JavaCompile) {
