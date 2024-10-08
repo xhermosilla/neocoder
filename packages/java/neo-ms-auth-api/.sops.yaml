@@ -1,4 +1,3 @@
 creation_rules:
-  - path_regex: '.*'
-    age: 'age1rpkgvlyyy5mutvhgucpwew60jzmaqvs9a6g8xhme4nfnku2lrcyqe3rzkp'
-    
+  - path_regex: ".*"
+    age: "age1rpkgvlyyy5mutvhgucpwew60jzmaqvs9a6g8xhme4nfnku2lrcyqe3rzkp"
