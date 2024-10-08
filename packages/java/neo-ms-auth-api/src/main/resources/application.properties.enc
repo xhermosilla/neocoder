@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
 	"data": "ENC[AES256_GCM,data:baBjC9JgfVexLWPnrVuYXmI4U1wTnfFcaKsCnJMue7+jJYGrocW42e8d1H2dH6yiE+hSEtzz0XgZ/wxzwoaeI85noniSILUJFw0aRdj+/R75O0hkHuCHOLWu5jCOCg0fsKwRI351vqiLbuCtaqfymqPOpYd5mhLsCkpcPi+8cf5Q446aYijfaHkw+OS+HlXaame5bMieesOEZw5lFs5PzAT4twBbCvDRIzzE2WOwylj22WCIhx2t/aRjBXnQRCBM7DHGPfB2io5YttDX1vngEWdCAr8tBu63bvE4jX1FVZcNNvWO7zEBLGMwVrIxzlfkMaFh7vrr5i4mGAqYIkUzSZui1fyV8EljlgWc1uhydcmR7Fj5wUeGHJB/HHZtgb5cqTSH8EoCTw/n1mtei9uu7FC9aLC0Kf3F0M2ur2SnEdKwJdVzsq87Rx/Kpz7/rMAhTXyCanWsStzlzQfc/tIimP3+TXhw,iv:qEfoMFblzDwx11Jmm7o3gNuBkX4Jh69E4+tKVc6wIys=,tag:m3Nq92Yc+XnaUQsrSxefmw==,type:str]",
 	"sops": {
@@ -19,19 +18,3 @@
 		"version": "3.9.0"
 	}
 }
-=======
-# Auth service configuration
-auth.token.secretKey=kPmD9MJpLh
-auth.token.issuer=neo
-auth.token.expiration=86400000
-
-# Login configuration
-auth.login.defaultUser=admin
-auth.login.defaultPassword=admin
-
-# Server configuration
-server.port=3010
-server.servlet.context-path=/neo/api/v1
-spring.application.name=neo-ms-auth-api
-server.error.include-stacktrace=never
->>>>>>> feat/java-auth-microservice#12
