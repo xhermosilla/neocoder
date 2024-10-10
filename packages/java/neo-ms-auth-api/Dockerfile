@@ -1,6 +1,6 @@
 FROM eclipse-temurin:22-jdk-alpine AS builder
 
-RUN apk update && apk add --no-cache bash wget unzip
+RUN apk update && apk add --no-cache bash unzip wget
 
 # Install gradle
 ENV GRADLE_VERSION=8.10.2
@@ -28,7 +28,7 @@ FROM eclipse-temurin:22-jre-alpine AS runtime
 WORKDIR /usr/src/app
 
 # Copy the jar from de builder image
-COPY --from=builder /usr/src/app/build/libs/*.jar ./app.jar
+COPY --from=builder /usr/src/app/build/libs/neo-ms-auth-api-0.0.1-SNAPSHOT.jar ./app.jar
 
 EXPOSE 3010
 
