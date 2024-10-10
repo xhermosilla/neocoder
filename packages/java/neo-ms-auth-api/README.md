@@ -91,6 +91,21 @@ To run the coverage, open a terminal in the root of the service folder and execu
 ```bash
     ./gradlew jacocoTestReport
 ```
+
+### Running the service with Docker
+
+Docker can be utilized to run the service. To create the Docker image, you can execute the following command:
+```bash
+    docker build -t neo-ms-auth-api
+```
+
+This will generate a Docker image named `neo-ms-auth-api`. To launch the Docker container, use the command below:
+```bash
+    docker run -p 3010:3010 neo-ms-auth-api
+```
+This command will initiate the Docker container and make the service availible on port 3010. The service will use the settings especified in the build.gradle
+
+
 ## Contributing
 
 Contributions are welcome! Feel free to submit a pull request or open an issue on GitHub.
