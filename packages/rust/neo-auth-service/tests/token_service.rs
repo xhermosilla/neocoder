@@ -1,6 +1,6 @@
 use neo_auth_service::TokenService;
 
-fn create(expires_in: Option<i32>) -> TokenService {
+fn create(expires_in: Option<i64>) -> TokenService {
     TokenService::new(
         "secret",
         "test",
