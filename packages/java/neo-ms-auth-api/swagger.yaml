@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: Auth Microservice API
+  description: API for user authentication using JWT.
+  version: 1.0.0
+  contact:
+    name: Development Team
+    url: https://github.com/xhermosilla/neocoder
+servers:
+  - url: http://localhost:3010/neo/api/v1
+    description: Local authentication server
+
+paths:
+  /auth/login:
+    post:
+      summary: Log in
+      description: Log in and obtain a JWT token.
+      tags:
+        - Authentication
+      requestBody:
+        description: User credentials to log in.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  example: admin
+      responses:
+        '200':
+          description: Successful authentication.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expires:
+                    type: integer
+                    description: Token expiration time in seconds.
+                    example: 3600
+                  token_type:
+                    type: string
+                    description: The type of the token returned. 
+                    example: Bearer
+                  token:
+                    type: string
+                    description: JWT access token.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        '401':
+          description: Invalid credentials.
+
+  /auth/refresh:
+    post:
+      summary: Refresh JWT token
+      description: Refresh the JWT token to keep the session active.
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: Send the current token in the Authorization header.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example: {}
+      responses:
+        '200':
+          description: JWT token refreshed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expires:
+                    type: integer
+                    description: Token expiration time in seconds.
+                    example: 3600
+                  token_type:
+                    type: string
+                    description: The type of the token returned. 
+                    example: Bearer
+                  token:
+                    type: string
+                    description: Refreshed JWT token.
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        '401':
+          description: Token expired or invalid.
+
+  /auth/validate:
+    post:
+      summary: Validate JWT token
+      description: Check if the JWT token is valid.
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: JWT token is valid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expires:
+                    type: long
+                    description: Expiration time for the token in unix time
+                    example: 1813776659
+                  expires_formatted:
+                    type: String
+                    description: Expiration time formatted
+                    example: "2027-06-23 20:50:59"
+                  valid:
+                    type: boolean
+                    description: Indicates whether the token is valid.
+                    example: true
+        '401':
+          description: Token expired or invalid.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

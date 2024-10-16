@@ -1,0 +1,38 @@
+### Neo Auth Service
+### -----------------------------------------
+
+@host = localhost:3010
+@baseUrl = http://localhost:3010/neo/api/v1
+@contentType = application/json
+
+### Health check
+
+GET http://{{host}}/health HTTP/1.1
+
+
+### Auth
+### -----------------------------------------
+
+### LOGIN
+
+# @name login
+POST {{baseUrl}}/auth/login HTTP/1.1
+content-type: application/json
+
+{ "username": "admin", "password": "admin" } 
+
+###
+
+@token = {{login.response.body.$.token}}
+### REFRESH
+
+POST {{baseUrl}}/auth/refresh HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{token}}
+
+
+### VALIDATE
+
+POST {{baseUrl}}/auth/validate HTTP/1.1
+content-type: application/json
+Authorization: Bearer {{token}}
